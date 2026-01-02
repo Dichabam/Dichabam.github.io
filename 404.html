@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 | Signal Lost</title>
+
+    <link rel="icon" type="image/png" href="./assets/images/d-tran.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Existing Core Styles -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components/glass.css">
+    <link rel="stylesheet" href="css/components/buttons.css">
+    <link rel="stylesheet" href="css/components/cursor.css">
+    <link rel="stylesheet" href="css/effects.css">
+    
+    <!-- 404 Specific Style -->
+    <link rel="stylesheet" href="css/404.css">
+
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+    
+    <!-- 404 Logic -->
+    <script type="module" src="js/404.js"></script>
+</head>
+<body>
+    <!-- Reusing your custom cursor -->
+    <div id="cursor"></div>
+
+    <main class="error-container">
+        <div class="error-card glass-surface">
+            <div class="error-header">
+                <!-- Removed glitch-text class -->
+                <h1 class="error-code" data-text="404">404</h1>
+                <div class="error-message">
+                    <span class="prefix">ERROR:</span> 
+                    <span class="typing-text">SIGNAL_LOST // COORDINATES_UNKNOWN</span>
+                </div>
+            </div>
+
+            <div class="game-wrapper">
+                <div class="game-ui">
+                    <div class="score-board">RECOVERED: <span id="score">0</span> BYTES</div>
+                    <div class="game-hint">[ARROWS] to Navigate Stream</div>
+                </div>
+                <canvas id="snakeCanvas"></canvas>
+                <div id="game-overlay" class="game-start-overlay">
+                    <div class="overlay-content">
+                        <h3>DATA STREAM INTERRUPTED</h3>
+                        <p>Collect data packets to restore connection.</p>
+                        <button id="start-btn" class="btn btn-outline hover-trigger">INITIALIZE RECOVERY</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-row">
+                <a href="index.html" class="btn btn-primary hover-trigger">
+                    <i class="fas fa-satellite-dish"></i> RETURN TO BASE
+                </a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,133 @@
+.error-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    position: relative;
+    z-index: 10;
+}
+
+.error-card {
+    width: 100%;
+    max-width: 600px;
+    border-radius: 20px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+}
+
+.error-code {
+    font-family: 'Compressa VF', sans-serif;
+    font-size: 8rem;
+    line-height: 0.8;
+    color: var(--danger);
+    margin-bottom: 10px;
+    text-shadow: 0 0 20px rgba(255, 0, 85, 0.3);
+}
+
+.error-message {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin-bottom: 30px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.prefix {
+    color: var(--danger);
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+/* Game Styles */
+.game-wrapper {
+    position: relative;
+    width: 100%;
+    margin-bottom: 30px;
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    overflow: hidden;
+    background: rgba(5, 5, 5, 0.8);
+    box-shadow: 0 0 15px rgba(3, 179, 195, 0.1);
+}
+
+.game-ui {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 15px;
+    background: rgba(3, 179, 195, 0.1);
+    border-bottom: 1px solid rgba(3, 179, 195, 0.2);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+}
+
+.score-board {
+    color: #fff;
+}
+
+.game-hint {
+    color: var(--accent);
+    animation: pulse 2s infinite;
+}
+
+canvas#snakeCanvas {
+    display: block;
+    width: 100%;
+    /* Aspect ratio managed in JS */
+    image-rendering: pixelated; 
+}
+
+.game-start-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5;
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+    transition: opacity 0.3s;
+}
+
+.game-start-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.overlay-content {
+    text-align: center;
+}
+
+.overlay-content h3 {
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.overlay-content p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+@media (max-width: 600px) {
+    .error-code { font-size: 6rem; }
+    .error-card { padding: 20px; }
+    .game-hint { display: none; }
+}
