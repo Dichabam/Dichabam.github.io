@@ -16,7 +16,7 @@ import { initGame } from "./game/engine.js";
 import { initProfileCard } from "./ui/profileCard.js";
 import { Terminal } from "./ui/terminal.js";
 import { initMagneticButtons } from "./ui/magnetic.js";
-import { StatusTicker } from "./ui/statusTicker.js";
+// import { StatusTicker } from "./ui/statusTicker.js"; // REMOVED as per request
 import { Flashlight } from "./effects/flashlight.js";
 import { WireframeMode } from "./effects/wireframe.js";
 import { NeuralSwarm } from "./effects/neuralSwarm.js";
@@ -25,7 +25,7 @@ import { Loader } from "./ui/loader.js";
 import { initThemeBackgrounds } from "./effects/themeBackgrounds.js";
 import { TouchRipple } from "./effects/touchRipple.js";
 import { NeonSling } from "./effects/neonSling.js";
-import { ConfettiButton } from "./effects/confettiButton.js"; // NEW IMPORT
+import { ConfettiButton } from "./effects/confettiButton.js";
 
 window.openProjectModal = openProjectModal;
 window.closeProjectModal = closeProjectModal;
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initProfileCard();
     new Terminal();
     initMagneticButtons();
-    new StatusTicker();
+    // new StatusTicker(); // REMOVED
 
     new Flashlight();
     new WireframeMode();
@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initThemeBackgrounds();
     new TouchRipple();
     new NeonSling();
-    new ConfettiButton(); // NEW INIT
+    new ConfettiButton();
 
     setTimeout(() => {
       new ScrollTransitions();
