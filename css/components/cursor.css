@@ -1,0 +1,45 @@
+#cursor {
+    position: fixed;
+    top: 0; left: 0;
+    width: 20px; height: 20px;
+    background: #fff;
+    border-radius: 50%;
+    pointer-events: none;
+    mix-blend-mode: difference;
+    z-index: 99999;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s, opacity 0.3s, transform 0.1s; /* Added transform transition for smooth lerp */
+    will-change: top, left, width, height;
+}
+
+#cursor.hovered {
+    width: 80px; height: 80px;
+    background: transparent;
+    border: 1px solid #fff;
+}
+
+/* FEATURE: Click interaction */
+#cursor.clicked {
+    width: 15px; 
+    height: 15px;
+    background: var(--accent);
+    mix-blend-mode: normal;
+    box-shadow: 0 0 10px var(--accent);
+}
+
+#cursor.hovered.clicked {
+    width: 70px;
+    height: 70px;
+    border-width: 2px;
+    border-color: var(--accent);
+    background: transparent;
+    box-shadow: none;
+}
+
+@media (hover: none) and (pointer: coarse) {
+    #cursor {
+        display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+    }
+}

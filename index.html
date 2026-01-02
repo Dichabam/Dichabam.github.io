@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Professional Portfolio of Dichaba Mofokeng, a Computer Science student at UCT.">
+    <title>Dichaba Mofokeng | CS</title>
+
+    <link rel="icon" type="image/png" href="./assets/images/d-tran.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components/glass.css">
+    <link rel="stylesheet" href="css/components/nav.css">
+    <link rel="stylesheet" href="css/components/buttons.css">
+    <link rel="stylesheet" href="css/components/cards.css">
+    <link rel="stylesheet" href="css/components/modals.css">
+    <link rel="stylesheet" href="css/components/cursor.css">
+    <link rel="stylesheet" href="css/components/game.css">
+    <link rel="stylesheet" href="css/components/terminal.css">
+    <link rel="stylesheet" href="css/components/loader.css">
+    <link rel="stylesheet" href="css/effects.css">
+    <link rel="stylesheet" href="css/features.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+    
+    <script type="module" src="js/main.js"></script>
+</head>
+<body>
+    <div id="app-loader">
+        <div class="loader-content">
+            <div class="loader-logo-wrapper">
+                <img src="./assets/images/d.png" alt="D" class="loader-logo" width="60" height="60">
+                <div class="loader-ring"></div>
+                <div class="loader-ring-2"></div>
+            </div>
+            <div class="loader-text-wrapper">
+                <span class="loader-text">INITIALIZING SYSTEM</span>
+                <span class="loader-dots">...</span>
+            </div>
+            <div class="loader-progress-bar">
+                <div class="loader-progress-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="cursor"></div>
+    <div id="lights"></div>
+    <div id="terminal-overlay" class="terminal-overlay">
+        <div class="terminal-window glass-surface">
+            <div class="terminal-header">
+                <span class="terminal-title"><i class="fas fa-terminal"></i> user@guest ~</span>
+                <button class="terminal-close" aria-label="Close Terminal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="terminal-body" id="terminal-body">
+                <div class="terminal-output">
+                    <div>Welcome to <span style="color:var(--accent)">D.M. OS v1.0.0</span></div>
+                    <div style="color:var(--text-muted); margin-bottom: 10px;">Type 'help' to see available commands.</div>
+                </div>
+                <div class="terminal-input-line">
+                    <span class="prompt">➜ ~</span>
+                    <input type="text" id="terminal-input" autocomplete="off" spellcheck="false" aria-label="Terminal Command Input">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-wrapper">
+        <nav class="pill-nav-container" id="main-nav" aria-label="Main Navigation">
+            <div class="pill-logo-wrapper glass-surface hover-trigger" id="nav-logo" title="Disconnect/Connect">
+               <img src="./assets/images/d.png" alt="D" onerror="this.style.display='none'; this.parentNode.innerText='DM'" style="pointer-events: none;" width="60" height="60">
+            </div>
+            <ul class="pill-list glass-surface">
+                <li><a href="#hero" class="pill-link hover-trigger">Home</a></li>
+                <li><a href="#about" class="pill-link hover-trigger">About</a></li>
+                <li><a href="#work" class="pill-link hover-trigger">Work</a></li>
+                <li><a href="#contact" class="pill-link hover-trigger">Contact</a></li>
+                <li><div class="pill-link hover-trigger" id="nav-game-btn" title="Open Simulation" role="button" tabindex="0"><i class="fas fa-gamepad"></i></div></li>
+            </ul>
+        </nav>
+    </div>
+
+    <button class="close-cv" id="close-cv-btn" onclick="toggleCV()" aria-label="Close CV"><i class="fas fa-times"></i></button>
+    
+    <div class="settings-wrapper">
+        <div id="settings-hint" class="settings-hint glass-surface">
+            Performance heavy? Toggle me!
+            <div class="hint-arrow"></div>
+        </div>
+        <button id="settings-btn" class="settings-btn hover-trigger" title="Toggle Effects on/off" aria-label="Toggle Visual Effects">
+            <i class="fas fa-cog"></i>
+        </button>
+        <button id="terminal-btn" class="terminal-toggle-btn hover-trigger" title="Open Terminal (Ctrl + `)" aria-label="Open Terminal" onclick="document.querySelector('#terminal-overlay').classList.add('active'); setTimeout(() => document.getElementById('terminal-input').focus(), 100);">
+            <i class="fas fa-terminal"></i>
+        </button>
+    </div>
+
+    <div class="modal-overlay" id="project-modal" aria-hidden="true" role="dialog" aria-modal="true">
+        <div class="modal-content glass-surface">
+            <button class="modal-close" id="modal-close-btn" onclick="closeProjectModal()" aria-label="Close Modal"><i class="fas fa-times"></i></button>
+            <span class="modal-tag" id="modal-type">PROJECT</span>
+            <h2 class="modal-title" id="modal-title">TITLE</h2>
+            <p class="modal-desc" id="modal-desc">Description goes here...</p>
+            <div class="modal-links" id="modal-links"></div>
+        </div>
+    </div>
+    
+    <div id="game-overlay" aria-hidden="true">
+        <div class="game-window" tabindex="0" role="dialog" aria-label="Trading Game Simulation">
+            <div class="game-header">
+                <div class="game-title">
+                    <i class="fas fa-chart-line"></i> NEW YORK SESSION
+                </div>
+                <div class="game-stats">
+                    <div class="stat-box">
+                        <span class="stat-label">P&L:</span>
+                        <span class="stat-val" id="scoreVal" style="color: var(--accent);">+0%</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">HIGH:</span>
+                        <span class="stat-val" id="highScoreVal">+0%</span>
+                    </div>
+                </div>
+                <button class="close-game-btn" id="close-game-btn" aria-label="Close Game"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="game-content">
+                <canvas id="gameCanvas"></canvas>
+                <div class="game-screen-ui" id="startScreen">
+                    <div id="pixel-blast-container"></div>
+                    <h1 class="game-h1">ALGO TRADER</h1>
+                    <p class="game-p">Navigate market volatility. Tap or Space to Jump.</p>
+                    <button class="game-action-btn" id="btn-init-game">INITIALIZE</button>
+                </div>
+                <div class="game-screen-ui" id="instructionScreen" style="display: none;">
+                    <div class="instruction-panel">
+                        <h2 style="color: #fff; font-family: 'Compressa VF'; font-size: 3rem; margin-bottom: 10px;">HOW TO PLAY</h2>
+                        <ul style="text-align: left; color: #ccc; font-family: 'JetBrains Mono'; font-size: 0.9rem; list-style: none; padding: 0; margin-bottom: 20px;">
+                            <li style="margin-bottom: 10px;"><i class="fas fa-arrow-up" style="color: var(--accent); width: 20px;"></i> <strong>Tap or Space</strong> to Jump</li>
+                            <li style="margin-bottom: 10px;"><i class="fas fa-square" style="color: #ff0055; width: 20px;"></i> <strong>Red Candles</strong> Crash the Algo</li>
+                            <li style="margin-bottom: 10px;"><i class="fas fa-square" style="color: #00ff88; width: 20px;"></i> <strong>Green Candles</strong> are Safe</li>
+                            <li><i class="fas fa-chart-line" style="color: var(--accent); width: 20px;"></i> Survive to Maximize P&L</li>
+                        </ul>
+                        <button class="game-action-btn" id="btn-start-trading">START TRADING</button>
+                    </div>
+                </div>
+                <div class="game-screen-ui" id="gameOverScreen" style="display: none;">
+                    <h1 class="game-h1" style="color: var(--danger); text-shadow: 0 0 20px var(--danger);">MARKET CRASH</h1>
+                    <p class="game-p" id="finalScoreMsg">Total Return: +0%</p>
+                    <button class="game-action-btn" id="btn-reboot">REBOOT ALGO</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="cv-overlay" aria-hidden="true" role="dialog" aria-modal="true">
+        <div class="cv-container glass-surface">
+            <header class="cv-header">
+                <div>
+                    <h1 class="cv-name">Dichaba Mofokeng</h1>
+                    <p style="color: var(--accent); letter-spacing: 2px; text-transform: uppercase; font-size: 0.9rem; margin-top:5px;">Student</p>
+                </div>
+                <div class="cv-contact">
+                    <p>Johannesburg, South Africa</p>
+                    <p>mofokengdichaba@gmail.com</p>
+                    <p>linkedin.com/in/dichaba-mofokeng</p>
+                </div>
+            </header>
+
+            <div class="cv-section">
+                <h2 class="cv-section-title">Professional Summary</h2>
+                <p style="color: var(--text-muted);">
+                    Enthusiastic and versatile Computer Science student at the University of Cape Town with strong foundations in programming, app development, and graphic design.
+                </p>
+            </div>
+
+            <div class="cv-section">
+                <h2 class="cv-section-title">Education</h2>
+                <div class="cv-item">
+                    <div class="cv-date">Present</div>
+                    <div class="cv-detail">
+                        <h3>University of Cape Town</h3>
+                        <h4>Bachelor of Business Science (BBusSc)</h4>
+                        <ul>
+                            <li>Major(s): Computer Science</li> 
+                            <li>Societies: UCT Mathematics, Investment, Developers Society, Golf Club</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="cv-item">
+                    <div class="cv-date">2019 – 2023</div>
+                    <div class="cv-detail">
+                        <h3>St. Matthews Private Secondary School</h3>
+                        <h4>Matriculated with Bachelor Pass & Distinctions</h4>
+                        <ul>
+                            <li>Part of the school top 10</li>
+                            <li>Served as a tutor</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cv-section">
+                <h2 class="cv-section-title">Technical Skills</h2>
+                <div class="cv-skills-grid">
+                    <div>
+                        <div class="cv-skill-category">Languages</div>
+                        <p style="color:var(--text-muted); font-size:0.9rem;">Python, Java, JavaScript, C#, C & C++, Kotlin, Scala, SQL, R</p>
+                    </div>
+                    <div>
+                        <div class="cv-skill-category">Frameworks/Libs</div>
+                        <p style="color:var(--text-muted); font-size:0.9rem;">PyTorch, Pandas, Matplotlib, React</p>
+                    </div>
+                    <div>
+                        <div class="cv-skill-category">Tools</div>
+                        <p style="color:var(--text-muted); font-size:0.9rem;">Git, VS Code & Visual Studio, Android Studio & Intellij ,Blender (3D)</p>
+                    </div>
+                    <div>
+                        <div class="cv-skill-category">Other</div>
+                        <p style="color:var(--text-muted); font-size:0.9rem;">Mathematics, Statistics, Percussion</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cv-section">
+                <h2 class="cv-section-title">Experience & Projects</h2>
+                <div class="cv-item">
+                    <div class="cv-date">2024 - 2025</div>
+                    <div class="cv-detail">
+                        <h3>Avenue Road Residence</h3>
+                        <h4>ICT & Maintenance Sub-Committee</h4>
+                        <ul>
+                            <li>Managed residence technical support and facilities improvements.</li>
+                            <li>Enhanced user satisfaction through efficient troubleshooting.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="cv-item">
+                    <div class="cv-date">2025</div>
+                    <div class="cv-detail">
+                        <h3>Hackathons (Resembler.Ai & Entelect)</h3>
+                        <h4>UCT Developers Society</h4>
+                        <ul>
+                            <li>Developed a scalable prototype for motor accident footage upload.</li>
+                            <li>Created an algorithm for optimal drone paths for animal feeding (Entelect Cup).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cv-section">
+                <h2 class="cv-section-title">Leadership</h2>
+                <div class="cv-item">
+                    <div class="cv-date">2023</div>
+                    <div class="cv-detail">
+                        <h3>Matric Leadership</h3>
+                        <h4>Outreach Committee</h4>
+                        <ul>
+                            <li>Coordinated events and facilitated student engagement.</li>
+                            <li>Mentored students in academic endeavours.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="cv-section">
+                
+                <div class="cv-skills-grid">
+                   
+                </div>
+            </div>
+            <div class="cv-section">
+                <p style="color: #64748b; font-size: 0.9rem;">Note: this is not the full CV. Full CV available on Request</p>
+            </div>
+        </div>
+    </div>
+
+    <main role="main">
+        <section id="hero" data-scroll-section>
+            <div class="scroll-shape shape-1"></div>
+            <div class="container hero-content">
+                <div class="hero-subtitle scroll-reveal">
+                    Hi Welcome to my website. My name is
+                    <br>
+                </div>
+                <h1 class="hero-title hover-trigger scroll-reveal-stagger">
+                    <span class="decrypted-text-trigger hover-trigger" data-text="DICHABA">DICHABA</span><br>
+                    <span class="glitch-text" data-text="MOFOKENG" style="color: var(--accent);">MOFOKENG</span>
+                </h1>
+                <span class="glitch-text scroll-reveal-stagger" style="font-weight: 600;" data-text="Aspiring Quantitative Developer & AI Engineer">
+                    Aspiring Quantitative Developer & <span id="neural-trigger" class="hover-trigger" title="Double tap to connect">AI Engineer</span>
+                </span>
+                <p class="hero-desc scroll-reveal-stagger">
+                    I am passionate about combining Artificial Intelligence, financial theory, and software engineering to build sophisticated trading tools. 
+                    Currently studying at the University of Cape Town.
+                </p>
+            
+                <div class="btn-group scroll-reveal-stagger">
+                    <button onclick="toggleCV()" class="btn btn-primary hover-trigger">
+                        <i class="fas fa-file-alt"></i> View CV
+                    </button>
+                    <a href="https://github.com/Dichabam" target="_blank" class="btn btn-outline hover-trigger">
+                        <i class="fab fa-github"></i> GitHub
+                    </a>
+                    <a href="https://www.linkedin.com/in/dichaba-mofokeng-913788327" target="_blank" class="btn btn-outline hover-trigger">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" data-scroll-section>
+            <div class="scroll-shape shape-2"></div>
+            <div class="container">
+                <div class="about-grid">
+                    <div class="pc-card-wrapper scroll-reveal-left" id="profile-card">
+                        <div class="pc-card">
+                            <div class="pc-inside hover-trigger">
+                                <img src ="./assets/images/dm.jpg" alt="Dichaba" class="pc-avatar" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80'" loading="lazy" width="300" height="375">
+                                <div class="pc-glare"></div>
+                            </div>
+                            <div class="pc-content">
+                                <div class="pc-name">Dichaba Mofokeng</div>
+                                <div class="pc-title">UCT CS Student <span class="obscure-clue">| ID: dichaba</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="about-text">
+                        <h2 class="section-header glitch-text scroll-reveal" data-text="Technical Profile">Technical Profile</h2>
+                        
+                        <p class="scroll-reveal" style="margin-bottom: 20px; color: var(--text-muted); font-size: 1.1rem;">
+                            I am currently an <strong>second-year</strong> student at the <strong>University of Cape Town</strong>. I like 
+                            Fullstack development and data analysis in Python as well as R. Most of the time I am a creative coder. I prefer frontend over backend, with that being said, <strong>my true interests lie in trading</strong>, I want to leverage my skills that I learned in Computer Science, Statistics and Mathematics to build sophisticated trading software and formulate the best trading starategies.
+                            
+                        </p>
+                        <p class="scroll-reveal" style="margin-bottom: 20px; color: var(--text-muted); font-size: 1.1rem;">
+                            I am constantly learning new skills, building new projects to gain more experience and deepen my knowledge and understanding, particularly, AI. I believe AI has the potential to revolutionise this field and any other field and provide a new way to approaching problems.
+                        </p>
+                        <p class="scroll-reveal" style="color: var(--text-muted);">
+                            I have participated in the <strong>Entelect University Cup</strong> and the <strong>Resembler.Ai</strong> Hackathon, 
+                            proving my ability to build scalable prototypes under pressure as well as work in a group.
+                        </p>
+                        
+                        <div class="skill-tags hover-trigger scroll-reveal">
+                            <span class="skill-tag">Python</span>
+                            <span class="skill-tag">C & C++</span>
+                            <span class="skill-tag">C#</span>
+                            <span class="skill-tag">Scala</span>
+                            <span class="skill-tag">Kotlin</span>
+                            <span class="skill-tag">Java</span>
+                            <span class="skill-tag">JavaScript</span>
+                            <span class="skill-tag">R</span>
+                            <span class="skill-tag">SQL</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="work" data-scroll-section>
+            <div class="scroll-shape shape-3"></div>
+            <div class="container">
+                <h2 class="section-header glitch-text scroll-reveal" data-text="Selected Works">Selected Works</h2>
+                <h3 class="work-section-title scroll-reveal">Projects</h3>
+                <div class="projects-grid" id="projects-container"></div>
+                <h3 class="work-section-title scroll-reveal">Research</h3>
+                <div class="research-grid" id="research-container"></div>
+            </div>
+        </section>
+
+        <section id="contact" data-scroll-section>
+            <div class="scroll-shape shape-4"></div>
+            <div class="container" style="text-align: center; max-width: 600px;">
+                <div class="text-pressure-container hover-trigger scroll-reveal-zoom" id="tp-container">
+                    <h2 class="text-pressure-title">Let's Connect</h2>
+                </div>
+                <p class="scroll-reveal" style="margin-bottom: 40px; color: var(--text-muted);">
+                    I am eager to contribute to projects in software development or design. 
+                    Whether it's quantitative finance or creative coding, I'm ready.
+                </p>
+                <a href="mailto:mofokengdichaba@gmail.com" class="btn btn-primary hover-trigger scroll-reveal-zoom">
+                    Contact Me
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">
+                &copy; 2025 Dichaba Mofokeng 
+                <span class="footer-system-log desktop-clue"> :: Sys: Online :: [f]ocus: null</span>
+                <span id="touch-clue" class="footer-system-log" style="display: none; color: var(--danger);"> :: [Q]uantum: offline</span>
+                <span id="sling-clue" class="footer-system-log"> :: [K]inetic: 0%</span>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

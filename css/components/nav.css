@@ -1,0 +1,113 @@
+.nav-wrapper {
+    position: fixed;
+    top: 30px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    z-index: 100;
+    pointer-events: none;
+    padding: 0 10px;
+}
+
+.pill-nav-container {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; 
+    transition: gap 0.5s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.pill-nav-container.disconnected {
+    gap: 30px; 
+}
+
+.pill-logo-wrapper {
+    width: 60px;  
+    height: 60px; 
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.320, 1);
+    z-index: 10;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.pill-logo-wrapper img {
+    width: 100%; height: 100%; object-fit: cover;
+    border-radius: 50%;
+}
+
+.pill-logo-wrapper:hover {
+    transform: rotate(360deg) scale(1.5);
+}
+
+.pill-logo-wrapper:hover + .pill-list {
+    transform: translateX(15px);
+}
+
+.pill-list {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 4px 6px; 
+    border-radius: 999px; 
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.320, 1);
+    opacity: 1;
+    transform: translateX(0);
+    max-width: 500px; 
+    height: 44px; 
+    border: 1px solid rgba(255, 255, 255, 0.08); 
+}
+
+.pill-link {
+    position: relative;
+    padding: 8px 16px; 
+    border-radius: 999px;
+    
+    color: var(--text); 
+    
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 13px; 
+    white-space: nowrap;
+    overflow: hidden;
+    transition: color 0.3s;
+    display: block;
+    z-index: 2;
+    cursor: none;
+}
+
+.pill-link:hover {
+    color: var(--dark);
+}
+
+.hover-circle {
+    position: absolute;
+    background: var(--accent); 
+    opacity: 0.8;
+    
+    border-radius: 999px;
+    pointer-events: none;
+    z-index: -1;
+    top: 0; left: 0; width: 100%; height: 100%;
+    transform: scale(0);
+    transform-origin: center;
+}
+
+@media (max-width: 900px) {
+    .nav-wrapper { top: 15px; padding: 0 5px; }
+    .pill-nav-container { gap: 2px; }
+    .pill-list { padding: 4px 6px; }
+    .pill-link { padding: 6px 10px; font-size: 12px; }
+    .pill-logo-wrapper { width: 44px; height: 44px; }
+}
+
+@media (max-width: 400px) {
+    .pill-link { padding: 6px 10px; font-size: 11px; }
+}
