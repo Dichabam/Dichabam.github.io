@@ -71,7 +71,6 @@ section {
     border-radius: 50%;
 }
 
-
 #hero {
     align-items: flex-start;
     justify-content: center;
@@ -149,7 +148,6 @@ section {
     margin-top: 35px;
 }
 
-/* --- UPDATED SKILL TAGS --- */
 .skill-tag {
     padding: 12px 24px;
     background: rgba(255, 255, 255, 0.03);
@@ -159,12 +157,10 @@ section {
     color: var(--text);
     font-family: 'JetBrains Mono', monospace;
     
-    /* Flex alignment for icons */
     display: inline-flex;
     align-items: center;
     gap: 10px;
     
-    /* Glass Effect */
     -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
     
@@ -193,7 +189,6 @@ section {
     color: #fff;
 }
 
-/* Subtle continuous float animation */
 @keyframes tagFloat {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-3px); }
@@ -203,7 +198,6 @@ section {
     animation: tagFloat 4s ease-in-out infinite;
     animation-delay: calc(var(--i, 1) * 0.2s);
 }
-/* ------------------------- */
 
 .work-section-title {
     font-size: 1.8rem;
@@ -219,7 +213,7 @@ section {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 30px;
     margin-bottom: 60px;
-    perspective: 1000px; /* Prepare for 3D card entry */
+    perspective: 1000px; 
 }
 
 @media (max-width: 900px) {
