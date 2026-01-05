@@ -93,6 +93,7 @@
   align-items: center;
   flex-wrap: wrap;
   outline: none;
+  -webkit-user-select: none;
   user-select: none;
   /* Ensure it inherits font properties */
   font-family: inherit;
@@ -107,6 +108,7 @@
   cursor: pointer;
   /* Filter transition handled in JS for sync, but keep color here */
   transition: color 0.3s ease; 
+  -webkit-user-select: none;
   outline: none;
   user-select: none;
   color: var(--text-muted); /* Inactive color */
