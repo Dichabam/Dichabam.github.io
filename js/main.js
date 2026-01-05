@@ -8,25 +8,24 @@ import {
 import { initCV, toggleCV } from "./ui/cv.js";
 import { initSettings } from "./ui/settings.js";
 import { initBackground } from "./effects/background3D.js";
-import { DecryptedText } from "./effects/decryptedText.js";
 import { TextPressure } from "./effects/textPressure.js";
 import { internalProjectData } from "./data/projects.js";
 import { optimizeWillChange } from "./core/utils.js";
 import { initGame } from "./game/engine.js";
 import { initProfileCard } from "./ui/profileCard.js";
-import { Terminal } from "./ui/terminal.js";
 import { initMagneticButtons } from "./ui/magnetic.js";
-// import { StatusTicker } from "./ui/statusTicker.js"; // REMOVED as per request
 import { Flashlight } from "./effects/flashlight.js";
 import { WireframeMode } from "./effects/wireframe.js";
 import { NeuralSwarm } from "./effects/neuralSwarm.js";
 import { ScrollTransitions } from "./effects/scrollTransitions.js";
 import { Loader } from "./ui/loader.js";
-import { initThemeBackgrounds } from "./effects/themeBackgrounds.js";
 import { TouchRipple } from "./effects/touchRipple.js";
 import { NeonSling } from "./effects/neonSling.js";
 import { ConfettiButton } from "./effects/confettiButton.js";
+import { DecryptedText } from "./effects/decryptedText.js";
+import { VariableProximity } from "./effects/variableProximity.js"; // New Import
 
+// Make global for inline HTML calls (like the close buttons)
 window.openProjectModal = openProjectModal;
 window.closeProjectModal = closeProjectModal;
 window.toggleCV = toggleCV;
@@ -41,14 +40,11 @@ document.addEventListener("DOMContentLoaded", () => {
     initCV();
     initSettings();
     initProfileCard();
-    new Terminal();
     initMagneticButtons();
-    // new StatusTicker(); // REMOVED
 
     new Flashlight();
     new WireframeMode();
     new NeuralSwarm();
-    initThemeBackgrounds();
     new TouchRipple();
     new NeonSling();
     new ConfettiButton();
@@ -73,6 +69,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const tpContainer = document.getElementById("tp-container");
     if (tpContainer) {
       new TextPressure("tp-container", "Let's Connect");
+    }
+
+    // Init Variable Proximity
+    const proximityEl = document.getElementById("proximity-text");
+    if (proximityEl) {
+      new VariableProximity("proximity-text", {
+        radius: 120,
+        falloff: "linear",
+        fromSettings: "'wght' 400, 'opsz' 9",
+        toSettings: "'wght' 1000, 'opsz' 40",
+      });
     }
 
     loadWork();
@@ -106,16 +113,20 @@ async function loadWork() {
     optimizeWillChange(card);
 
     if (item.type === "project") {
-      card.classList.add("folder-card");
-      // PERF: Lazy load dynamic images
+      // Simplified Project Card Structure
+      card.classList.add("project-card"); // Changed from folder-card
+
       let iconHtml = item.icon
-        ? `<img src="${item.icon}" alt="${item.title}" loading="lazy" width="80" height="80">`
-        : `<i class="fas fa-folder"></i>`;
+        ? `<img src="${item.icon}" alt="${item.title}" loading="lazy" class="project-icon-img">`
+        : `<i class="fas fa-code project-icon-i"></i>`;
 
       card.innerHTML = `
-          <div class="folder-tab"></div>
-          <div class="folder-cover">${iconHtml}</div>
-          <div class="folder-info"><h4 class="folder-title">${item.title}</h4></div>
+          <div class="project-icon-wrapper">${iconHtml}</div>
+          <div class="project-content">
+            <h4 class="project-title">${item.title}</h4>
+            <div class="project-arrow"><i class="fas fa-arrow-right"></i></div>
+          </div>
+          <div class="project-glow"></div>
       `;
       projContainer.appendChild(card);
     } else {

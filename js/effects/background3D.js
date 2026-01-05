@@ -5,7 +5,7 @@ import { debounce } from "../core/utils.js"; // Import debounce
 // We rely on the global 'THREE' object loaded via the <script> tag in index.html.
 
 let scene, camera, renderer;
-let starMesh, gridHelper;
+let starMesh; // Removed gridHelper
 let animationId;
 let isPaused = false;
 
@@ -38,7 +38,7 @@ export function initBackground() {
   // 2. Stars
   // OPTIMIZATION: Reduce star count significantly on mobile devices
   const isMobile = window.innerWidth < 768;
-  const starsCount = isMobile ? 200 : 700;
+  const starsCount = isMobile ? 200 : 1500;
 
   const positions = new Float32Array(starsCount * 3);
   const speeds = new Float32Array(starsCount);
@@ -86,11 +86,7 @@ export function initBackground() {
   starMesh = new THREE.Points(starGeo, starMat);
   scene.add(starMesh);
 
-  // 3. Grid
-  gridHelper = new THREE.GridHelper(200, 40, 0x5469d4, 0x222222);
-  gridHelper.position.set(0, -2, -50);
-  gridHelper.scale.set(1, 1, 5);
-  scene.add(gridHelper);
+  // 3. Grid REMOVED
 
   // OPTIMIZATION: Debounce resize event
   window.addEventListener("resize", debounce(onWindowResize, 200), false);
@@ -136,9 +132,7 @@ function animate() {
     starMesh.material.uniforms.uTime.value = time;
   }
 
-  if (gridHelper) {
-    gridHelper.position.z = ((time * 15) % 10) - 50;
-  }
+  // Grid animation removed
 
   renderer.render(scene, camera);
 }
