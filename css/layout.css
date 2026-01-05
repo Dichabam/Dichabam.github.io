@@ -82,7 +82,7 @@ section {
 }
 
 .hero-subtitle {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Montserrat', sans-serif;
     color: var(--accent);
     margin-bottom: 5px; 
     display: inline-block;
@@ -189,7 +189,7 @@ section {
     border-radius: 100px;
     font-size: 0.95rem;
     color: var(--text);
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Montserrat', sans-serif;
     
     display: inline-flex;
     align-items: center;
@@ -257,4 +257,4 @@ section {
 
 @media (max-width: 400px) {
     .hero-title { font-size: 2.8rem; }
-}   
+}

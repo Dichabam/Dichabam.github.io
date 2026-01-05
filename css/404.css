@@ -22,7 +22,7 @@
 }
 
 .error-code {
-    font-family: 'Compressa VF', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     font-size: 8rem;
     line-height: 0.8;
     color: var(--danger);
@@ -31,7 +31,7 @@
 }
 
 .error-message {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Montserrat', sans-serif;
     color: var(--text-muted);
     font-size: 1rem;
     margin-bottom: 30px;
@@ -65,7 +65,7 @@
     padding: 10px 15px;
     background: rgba(3, 179, 195, 0.1);
     border-bottom: 1px solid rgba(3, 179, 195, 0.2);
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Montserrat', sans-serif;
     font-size: 0.8rem;
 }
 
@@ -110,7 +110,7 @@ canvas#snakeCanvas {
 
 .overlay-content h3 {
     color: var(--accent);
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Montserrat', sans-serif;
     margin-bottom: 10px;
     font-size: 1.1rem;
 }

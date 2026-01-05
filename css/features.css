@@ -4,7 +4,7 @@
     right: 80px; 
     display: flex;
     gap: 15px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Montserrat', sans-serif;
     font-size: 0.75rem;
     color: var(--text-muted);
     background: rgba(5, 5, 5, 0.8);
@@ -83,7 +83,7 @@ body.game-active .touch-toggle-btn {
 }
 
 .footer-system-log {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Montserrat', sans-serif;
     font-size: 0.75rem;
     color: var(--text-muted); 
     opacity: 0.7;
@@ -110,7 +110,7 @@ body.debug-mode *:not(.wireframe-help-btn):not(.wireframe-modal):not(.wireframe-
     text-shadow: none !important;
     border: 1px solid rgba(0, 255, 136, 0.3) !important;
     color: #00ff88 !important;
-    font-family: 'JetBrains Mono', monospace !important;
+    font-family: 'Montserrat', sans-serif !important;
     border-radius: 0 !important;
 }
 
@@ -142,7 +142,7 @@ body.debug-mode .modal-content * {
     opacity: 1 !important;
     filter: none !important;
     color: #e2e8f0 !important; 
-    font-family: 'JetBrains Mono', monospace !important; 
+    font-family: 'Montserrat', sans-serif !important; 
     border-color: rgba(255, 255, 255, 0.1) !important; 
 }
 
@@ -159,7 +159,7 @@ body.debug-mode .modal-tag {
 .debug-watermark-corner {
     position: fixed;
     top: 20px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Montserrat', sans-serif;
     font-size: 0.8rem;
     font-weight: 700;
     color: rgba(0, 255, 136, 0.6) !important;
@@ -187,7 +187,7 @@ body.debug-mode .modal-tag {
     background: #000 !important;
     border: 2px solid #00ff88 !important;
     color: #00ff88 !important;
-    font-family: 'JetBrains Mono', monospace !important;
+    font-family: 'Montserrat', sans-serif !important;
     font-size: 1.5rem !important;
     font-weight: bold !important;
     border-radius: 50% !important;
@@ -223,7 +223,7 @@ body.debug-mode .modal-tag {
     padding: 40px !important;
     max-width: 500px;
     text-align: center;
-    font-family: 'JetBrains Mono', monospace !important;
+    font-family: 'Montserrat', sans-serif !important;
     box-shadow: 0 0 50px rgba(0, 255, 136, 0.1) !important;
 }
 
@@ -268,7 +268,7 @@ body.debug-mode .modal-tag {
     padding: 20px 30px;
     border-radius: 8px;
     color: #fff;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Montserrat', sans-serif;
     z-index: 10002;
     text-align: center;
     box-shadow: 0 0 30px rgba(3, 179, 195, 0.15);

@@ -64,7 +64,7 @@
 }
 
 .loader-text-wrapper {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Montserrat', sans-serif;
     font-size: 0.8rem;
     color: var(--accent);
     letter-spacing: 2px;
