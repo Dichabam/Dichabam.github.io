@@ -15,32 +15,21 @@ export class NeonSling {
     this.dragStart = null;
     this.dragCurrent = null;
 
-    // New properties for scroll vs sling detection
     this.isSlinging = false;
     this.slingTimer = null;
 
-    this.tapCount = 0;
-    this.tapTimer = null;
+    // Interaction properties
+    this.clickCount = 0;
+    this.clickTimer = null;
     this.clueElement = null;
-    this.closeBtn = null;
 
     this.colors = ["#ff00ff", "#00ffff", "#ffff00", "#ff0055"];
     this.friction = 0.99;
     this.gravity = 0.2;
     this.bounceDamping = 0.7;
 
-    // Only init on touch devices
-    if (this.isTouchDevice()) {
-      this.init();
-    }
-  }
-
-  isTouchDevice() {
-    return (
-      "ontouchstart" in window ||
-      navigator.maxTouchPoints > 0 ||
-      navigator.msMaxTouchPoints > 0
-    );
+    // Initialize immediately
+    this.init();
   }
 
   init() {
@@ -51,15 +40,18 @@ export class NeonSling {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         z-index: 9998; pointer-events: none; opacity: 0;
         transition: opacity 0.5s ease;
-        touch-action: pan-y; 
+        touch-action: none;
     `;
     document.body.appendChild(this.canvas);
     this.ctx = this.canvas.getContext("2d");
 
-    // 2. Setup UI Elements
-    this.createCloseButton();
-    // Delay setup to ensure DOM is ready, but also check immediately
-    setTimeout(() => this.setupClue(), 1000);
+    // 2. Setup Clue (The "Button")
+    // Wait for DOM to be fully ready to find the footer
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", () => this.setupClue());
+    } else {
+      setTimeout(() => this.setupClue(), 500);
+    }
 
     // 3. Resize Listener
     window.addEventListener(
@@ -67,162 +59,166 @@ export class NeonSling {
       debounce(() => this.resize(), 200)
     );
 
-    // 4. Touch Listeners
-    window.addEventListener("touchstart", (e) => this.handleStart(e), {
-      passive: false,
-    });
-    window.addEventListener("touchmove", (e) => this.handleMove(e), {
-      passive: false,
-    });
-    window.addEventListener("touchend", (e) => this.handleEnd(e));
+    // 4. Input Listeners
+    this.bindInputEvents();
 
     this.resize();
   }
 
-  createCloseButton() {
-    this.closeBtn = document.createElement("button");
-    this.closeBtn.innerHTML = "&times;";
-    this.closeBtn.ariaLabel = "Close Slingshot Mode";
-    this.closeBtn.style.cssText = `
-        position: fixed; top: 20px; right: 20px;
-        width: 44px; height: 44px;
-        background: rgba(0, 0, 0, 0.6); 
-        border: 1px solid #00ff88;
-        color: #00ff88; 
-        font-size: 28px; 
-        line-height: 1;
-        border-radius: 50%; 
-        z-index: 10000; /* Above the canvas */
-        display: none; 
-        justify-content: center; 
-        align-items: center;
-        cursor: pointer; 
-        backdrop-filter: blur(5px);
-        box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
-    `;
+  bindInputEvents() {
+    const options = { passive: false };
 
-    const closeAction = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      this.toggle();
-    };
+    // Touch
+    window.addEventListener("touchstart", (e) => this.handleStart(e), options);
+    window.addEventListener("touchmove", (e) => this.handleMove(e), options);
+    window.addEventListener("touchend", (e) => this.handleEnd(e));
 
-    this.closeBtn.addEventListener("click", closeAction);
-    this.closeBtn.addEventListener("touchstart", closeAction, {
-      passive: false,
-    });
-
-    document.body.appendChild(this.closeBtn);
+    // Mouse
+    window.addEventListener("mousedown", (e) => this.handleStart(e));
+    window.addEventListener("mousemove", (e) => this.handleMove(e));
+    window.addEventListener("mouseup", (e) => this.handleEnd(e));
   }
 
   setupClue() {
-    // Try to find existing clue element
-    this.clueElement = document.getElementById("sling-clue");
+    // Prevent duplicate creation
+    if (document.getElementById("sling-clue")) return;
 
-    // If it doesn't exist, CREATE IT dynamically
-    if (!this.clueElement) {
-      this.clueElement = document.createElement("div");
-      this.clueElement.id = "sling-clue";
-      this.clueElement.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        font-family: 'Space Mono', monospace;
-        font-size: 10px;
-        color: rgba(255, 255, 255, 0.3);
-        z-index: 9999;
-        pointer-events: auto;
-        padding: 10px;
-        border: 1px dashed rgba(255, 255, 255, 0.1);
-        background: rgba(0, 0, 0, 0.2);
-        backdrop-filter: blur(2px);
-        border-radius: 4px;
-        user-select: none;
-        transition: all 0.3s ease;
-      `;
-      this.clueElement.innerText = " :: [K]inetic: 0%";
-      document.body.appendChild(this.clueElement);
+    const findFooter = () => {
+      const footer =
+        document.querySelector(".site-footer") ||
+        document.querySelector("footer");
+
+      if (footer) {
+        this.createClueInFooter(footer);
+      } else {
+        // Retry if footer not found yet (e.g. dynamic content)
+        setTimeout(findFooter, 500);
+      }
+    };
+
+    findFooter();
+  }
+
+  createClueInFooter(footer) {
+    this.clueElement = document.createElement("div");
+    this.clueElement.id = "sling-clue";
+
+    // Ensure footer can position absolute children
+    const computedStyle = window.getComputedStyle(footer);
+    if (computedStyle.position === "static") {
+      footer.style.position = "relative";
     }
 
-    // Attach listeners
+    // Centered at the bottom of the footer
+    this.clueElement.style.cssText = `
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      color: rgba(255, 255, 255, 0.15);
+      cursor: pointer;
+      z-index: 100;
+      user-select: none;
+      padding: 10px 20px;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+      pointer-events: auto; 
+    `;
+    this.clueElement.innerText = "PLAY";
+
+    footer.appendChild(this.clueElement);
+
+    // Click Logic for Single vs Double Click
     this.clueElement.addEventListener("click", (e) => {
-      this.chargeSystem();
+      e.preventDefault();
+      e.stopPropagation();
+      this.handleClueInteraction();
     });
+
+    // Touch support for the button specifically
     this.clueElement.addEventListener(
       "touchstart",
       (e) => {
-        this.chargeSystem();
+        // We rely on the click event that usually follows touch,
+        // but we prevent propagation to avoid firing slingshot logic
+        e.stopPropagation();
       },
-      { passive: true }
+      { passive: false }
     );
   }
 
-  chargeSystem() {
-    this.tapCount++;
-    const pct = Math.min(100, this.tapCount * 20);
+  handleClueInteraction() {
+    this.clickCount++;
 
-    // Human-like system feedback
-    if (this.tapCount === 1) {
-      this.clueElement.innerText = ` :: [K]inetic: INITIATING... ${pct}%`;
-    } else if (this.tapCount < 5) {
-      this.clueElement.innerText = ` :: [K]inetic: CHARGING... ${pct}%`;
+    if (this.clickCount === 1) {
+      // Wait to see if it's a double click
+      this.clickTimer = setTimeout(() => {
+        this.clickCount = 0;
+        this.triggerSingleClickEffect(); // Single Click Action
+      }, 300); // 300ms delay window
+    } else if (this.clickCount === 2) {
+      // Double click detected
+      clearTimeout(this.clickTimer);
+      this.clickCount = 0;
+      this.toggle(); // Double Click Action
     }
+  }
 
-    this.clueElement.style.color = `rgb(${255}, ${255 - pct * 2.5}, ${
-      255 - pct * 2.5
-    })`;
-    this.clueElement.style.borderColor = `rgba(255, ${255 - pct * 2.5}, ${
-      255 - pct * 2.5
-    }, 0.5)`;
+  triggerSingleClickEffect() {
+    // Visual Ripple/Glow Effect without toggling state
+    if (!this.clueElement) return;
+
+    const originalColor = this.isActive
+      ? "#ff0055"
+      : "rgba(255, 255, 255, 0.15)";
+    const originalShadow = this.isActive ? "0 0 10px #ff0055" : "none";
+
+    // Flash Effect
+    this.clueElement.style.color = "#00ff88";
+    this.clueElement.style.textShadow = "0 0 15px #00ff88";
 
     if (navigator.vibrate) navigator.vibrate(5);
 
-    if (this.tapTimer) clearTimeout(this.tapTimer);
-
-    this.tapTimer = setTimeout(() => {
-      if (!this.isActive) {
-        this.tapCount = 0;
-        this.clueElement.innerText = ` :: [K]inetic: 0%`;
-        this.clueElement.style.color = "rgba(255, 255, 255, 0.3)";
-        this.clueElement.style.borderColor = "rgba(255, 255, 255, 0.1)";
+    setTimeout(() => {
+      if (this.clueElement) {
+        this.clueElement.style.color = originalColor;
+        this.clueElement.style.textShadow = originalShadow;
       }
-    }, 800);
-
-    if (this.tapCount >= 5) {
-      this.toggle();
-      this.tapCount = 0;
-      if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-    }
+    }, 400);
   }
 
   toggle() {
     this.isActive = !this.isActive;
 
     if (this.isActive) {
+      // Activate
       this.canvas.style.opacity = "1";
       this.canvas.style.pointerEvents = "auto";
-      this.closeBtn.style.display = "flex";
       this.startLoop();
-      this.showFeedback("SYSTEM: SLINGSHOT MECHANISM ENGAGED");
+      this.showFeedback("SYSTEM: SLINGSHOT ENGAGED");
 
       if (this.clueElement) {
-        this.clueElement.innerText = " :: [K]inetic: ONLINE";
-        this.clueElement.style.color = "#00ff88";
-        this.clueElement.style.borderColor = "#00ff88";
-        this.clueElement.style.textShadow = "0 0 10px #00ff88";
+        this.clueElement.innerText = "STOP";
+        this.clueElement.style.color = "#ff0055";
+        this.clueElement.style.textShadow = "0 0 10px #ff0055";
       }
+      if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
     } else {
+      // Deactivate
       this.canvas.style.opacity = "0";
       this.canvas.style.pointerEvents = "none";
-      this.closeBtn.style.display = "none";
-      this.showFeedback("SYSTEM: KINETIC DAMPENERS ENABLED");
+      this.showFeedback("SYSTEM: DAMPENERS ENABLED");
 
       if (this.clueElement) {
-        this.clueElement.innerText = " :: [K]inetic: 0%";
-        this.clueElement.style.color = "rgba(255, 255, 255, 0.3)";
-        this.clueElement.style.borderColor = "rgba(255, 255, 255, 0.1)";
-        this.clueElement.style.textShadow = "";
+        this.clueElement.innerText = "PLAY";
+        this.clueElement.style.color = "rgba(255, 255, 255, 0.15)";
+        this.clueElement.style.textShadow = "none";
       }
+      if (navigator.vibrate) navigator.vibrate(50);
     }
   }
 
@@ -233,17 +229,26 @@ export class NeonSling {
     this.canvas.height = this.height;
   }
 
+  getInputCoordinates(e) {
+    if (e.changedTouches) {
+      return { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
+    }
+    return { x: e.clientX, y: e.clientY };
+  }
+
   handleStart(e) {
     if (!this.isActive) return;
-    if (e.target === this.closeBtn || this.closeBtn.contains(e.target)) return;
-    if (e.target === this.clueElement) return;
+    // Important: Don't start slinging if clicking the toggle button
+    if (e.target === this.clueElement || this.clueElement?.contains(e.target))
+      return;
 
-    const t = e.changedTouches[0];
-    this.dragStart = { x: t.clientX, y: t.clientY };
-    this.dragCurrent = { x: t.clientX, y: t.clientY };
+    const coords = this.getInputCoordinates(e);
+    this.dragStart = coords;
+    this.dragCurrent = coords;
 
     this.isSlinging = false;
 
+    // Small delay to distinguish tap from drag
     this.slingTimer = setTimeout(() => {
       this.isSlinging = true;
       if (navigator.vibrate) navigator.vibrate(20);
@@ -253,15 +258,16 @@ export class NeonSling {
   handleMove(e) {
     if (!this.isActive || !this.dragStart) return;
 
-    const t = e.changedTouches[0];
-    const dx = t.clientX - this.dragStart.x;
-    const dy = t.clientY - this.dragStart.y;
+    const coords = this.getInputCoordinates(e);
+    const dx = coords.x - this.dragStart.x;
+    const dy = coords.y - this.dragStart.y;
     const dist = Math.sqrt(dx * dx + dy * dy);
 
     if (this.isSlinging) {
       if (e.cancelable) e.preventDefault();
-      this.dragCurrent = { x: t.clientX, y: t.clientY };
+      this.dragCurrent = coords;
     } else {
+      // If moved significantly before timer fires, cancel sling (it's likely a scroll)
       if (dist > 10) {
         if (this.slingTimer) {
           clearTimeout(this.slingTimer);
