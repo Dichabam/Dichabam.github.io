@@ -74,7 +74,8 @@
     
     text-decoration: none;
     font-weight: 500;
-    font-size: 13px; 
+    font-size: 13px;
+    font-family: 'Montserrat', sans-serif; /* Added Montserrat Font */
     white-space: nowrap;
     overflow: hidden;
     transition: color 0.3s;

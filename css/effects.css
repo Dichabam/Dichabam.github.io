@@ -11,7 +11,7 @@
     pointer-events: none;
 }
 
-/* --- Gradient Text --- */
+/* --- Gradient Text (Kept for reference, but removed from usage) --- */
 .gradient-text {
     position: relative;
     display: inline-block;
@@ -82,4 +82,85 @@
 .variable-proximity-active {
     font-family: 'Roboto Flex', sans-serif;
     cursor: default;
+}
+
+/* --- True Focus Effect --- */
+.focus-container {
+  position: relative;
+  display: flex;
+  gap: 0.5em; /* Adjusted gap slightly for header flow */
+  justify-content: flex-start; /* Align left usually for headers, or center if parent says so */
+  align-items: center;
+  flex-wrap: wrap;
+  outline: none;
+  user-select: none;
+  /* Ensure it inherits font properties */
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.focus-word {
+  position: relative;
+  font-size: inherit; /* Changed from 3rem to inherit */
+  font-weight: inherit; /* Changed from 900 to inherit */
+  cursor: pointer;
+  /* Filter transition handled in JS for sync, but keep color here */
+  transition: color 0.3s ease; 
+  outline: none;
+  user-select: none;
+  color: var(--text-muted); /* Inactive color */
+}
+
+.focus-word.active {
+  color: #fff; /* Active color */
+  filter: blur(0);
+}
+
+.focus-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  box-sizing: content-box;
+  border: none;
+  z-index: 10;
+}
+
+.corner {
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  border: 3px solid var(--border-color, #fff);
+  filter: drop-shadow(0px 0px 4px var(--border-color, #fff));
+  border-radius: 3px;
+  transition: none;
+}
+
+.top-left {
+  top: -5px;
+  left: -5px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.top-right {
+  top: -5px;
+  right: -5px;
+  border-left: none;
+  border-bottom: none;
+}
+
+.bottom-left {
+  bottom: -5px;
+  left: -5px;
+  border-right: none;
+  border-top: none;
+}
+
+.bottom-right {
+  bottom: -5px;
+  right: -5px;
+  border-left: none;
+  border-top: none;
 }

@@ -92,6 +92,12 @@ section {
     border: 1px solid rgba(3, 179, 195, 0.2);
     font-size: 1.1rem;
     font-weight: 500;
+    
+    /* Glassy Effect */
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    text-shadow: 0 0 1px rgba(3, 179, 195, 0.3);
 }
 
 .hero-title {
@@ -105,6 +111,11 @@ section {
     margin-top: 10px; 
 }
 
+/* Specific Glow for MOFOKENG text - Decreased intensity */
+.hero-title span:last-child {
+    text-shadow: 0 0 10px rgba(3, 179, 195, 0.3), 0 0 20px rgba(3, 179, 195, 0.2);
+}
+
 .hero-desc {
     font-size: 1.25rem;
     color: var(--text-muted);
@@ -112,6 +123,7 @@ section {
     margin-bottom: 40px;
     border-left: 2px solid var(--accent);
     padding-left: 20px;
+    font-family: 'Montserrat', sans-serif;
 }
 
 .about-grid {
@@ -122,12 +134,25 @@ section {
     perspective: 1000px; 
 }
 
+/* Add specific rules for the requested sections to use Montserrat */
+.about-text p {
+    font-family: 'Montserrat', sans-serif;
+}
+
+#contact p {
+    font-family: 'Montserrat', sans-serif;
+}
+
 .section-header {
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 30px;
     position: relative;
     display: inline-block;
+    /* Glow for ABOUT ME & Selected Works */
+    filter: drop-shadow(0 0 8px rgba(3, 179, 195, 0.4));
+    /* Force custom cursor (hide default) */
+    cursor: none; 
 }
 
 .section-header::after {
@@ -135,10 +160,19 @@ section {
     position: absolute;
     bottom: -10px;
     left: 0;
-    width: 60px;
+    width: 60px; /* Initial width */
     height: 4px;
     background: var(--accent);
     border-radius: 2px;
+    
+    /* Animation transition settings */
+    transition: width 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
+}
+
+/* Hover Animation: Expand to side-to-side (100%) and add glow */
+.section-header:hover::after {
+    width: 100%;
+    box-shadow: 0 0 12px var(--accent), 0 0 20px rgba(3, 179, 195, 0.6);
 }
 
 .skill-tags {
@@ -223,4 +257,4 @@ section {
 
 @media (max-width: 400px) {
     .hero-title { font-size: 2.8rem; }
-}
+}   
