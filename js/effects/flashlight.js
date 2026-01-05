@@ -3,6 +3,7 @@ export class Flashlight {
     this.isActive = false;
     this.overlay = null;
     this.popup = null;
+    this.hint = null; // New hint element
     this.mouseX = 0;
     this.mouseY = 0;
 
@@ -20,12 +21,16 @@ export class Flashlight {
       window.matchMedia("(pointer: coarse)").matches;
     if (isMobile) return;
 
+    // 1. Setup Overlay
     this.overlay = document.createElement("div");
     this.overlay.id = "flashlight-overlay";
-    // OPTIMIZATION: Hardware acceleration hint
     this.overlay.style.willChange = "background";
     document.body.appendChild(this.overlay);
 
+    // 2. Setup Hint (Clue)
+    this.setupHint();
+
+    // 3. Listeners
     window.addEventListener("keydown", (e) => {
       if (
         e.key.toLowerCase() === "f" &&
@@ -36,12 +41,37 @@ export class Flashlight {
       }
     });
 
-    // OPTIMIZATION: Only update coordinate variables, do NOT touch DOM here
     window.addEventListener("mousemove", (e) => {
-      if (!this.isActive) return;
+      // Always track mouse for hint parallax even if not active
       this.mouseX = e.clientX;
       this.mouseY = e.clientY;
     });
+  }
+
+  setupHint() {
+    // Create a subtle hint in the bottom left
+    this.hint = document.createElement("div");
+    this.hint.className = "system-clue";
+    this.hint.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        font-family: 'Space Mono', monospace;
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.3);
+        z-index: 50;
+        pointer-events: none;
+        opacity: 0.7;
+        transition: opacity 0.3s ease;
+    `;
+    this.hint.innerHTML =
+      ":: <span style='color:#00ff88'>[FOCUS]</span>";
+    document.body.appendChild(this.hint);
+
+    // Fade hint out after 8 seconds, but bring it back if they hover near it
+    setTimeout(() => {
+      if (this.hint) this.hint.style.opacity = "0.2";
+    }, 8000);
   }
 
   toggle() {
@@ -49,12 +79,26 @@ export class Flashlight {
 
     if (this.isActive) {
       this.overlay.classList.add("active");
-      this.startLoop(); // Start the render loop
+      this.startLoop();
       this.showPopup(true);
+
+      // Update hint to show how to exit
+      if (this.hint) {
+        this.hint.innerHTML =
+          ":: FOCUS ACTIVE. PRESS <span style='color:#ff0055'>[F]</span> TO DISENGAGE";
+        this.hint.style.opacity = "1";
+      }
     } else {
       this.overlay.classList.remove("active");
-      this.stopLoop(); // Stop the render loop
+      this.stopLoop();
       this.showPopup(false);
+
+      // Revert hint
+      if (this.hint) {
+        this.hint.innerHTML =
+          ":: <span style='color:#00ff88'>[FOCUS]</span>";
+        this.hint.style.opacity = "0.2";
+      }
     }
   }
 
@@ -70,17 +114,13 @@ export class Flashlight {
     }
   }
 
-  // OPTIMIZATION: Update DOM in sync with refresh rate
   loop() {
     if (!this.isActive) return;
 
-    // Linear interpolation for smoothness
     this.currentX += (this.mouseX - this.currentX) * 0.2;
     this.currentY += (this.mouseY - this.currentY) * 0.2;
 
-    // Only update DOM if overlay is present
     if (this.overlay) {
-      // Use toFixed to avoid sub-pixel rendering jitter
       this.overlay.style.setProperty("--x", `${this.currentX.toFixed(1)}px`);
       this.overlay.style.setProperty("--y", `${this.currentY.toFixed(1)}px`);
     }
@@ -93,16 +133,15 @@ export class Flashlight {
       this.popup = document.createElement("div");
       this.popup.className = "feature-popup";
       this.popup.innerHTML = `
-        <h3>Flashlight Mode</h3>
-        <p>Focus mode enabled. Distractions hidden in shadow.</p>
-        <p style="margin-top:5px; font-size: 0.75rem;">Press <span class="key-badge">F</span> to toggle off.</p>
+        <h3>FOCUS MODE INITIALIZED</h3>
+        <p>Distractions masked. Light focus engaged.</p>
+        <p style="margin-top:5px; font-size: 0.75rem; color: #888;">// PRESS 'F' TO ABORT</p>
       `;
       document.body.appendChild(this.popup);
     }
 
     if (show) {
       setTimeout(() => this.popup.classList.add("active"), 10);
-
       if (this.hideTimer) clearTimeout(this.hideTimer);
       this.hideTimer = setTimeout(() => {
         this.popup.classList.remove("active");

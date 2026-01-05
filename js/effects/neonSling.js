@@ -29,6 +29,7 @@ export class NeonSling {
     this.gravity = 0.2;
     this.bounceDamping = 0.7;
 
+    // Only init on touch devices
     if (this.isTouchDevice()) {
       this.init();
     }
@@ -43,9 +44,9 @@ export class NeonSling {
   }
 
   init() {
+    // 1. Setup Canvas
     this.canvas = document.createElement("canvas");
     this.canvas.id = "sling-canvas";
-    // Changed touch-action from none to pan-y to allow browser vertical scrolling
     this.canvas.style.cssText = `
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         z-index: 9998; pointer-events: none; opacity: 0;
@@ -55,17 +56,18 @@ export class NeonSling {
     document.body.appendChild(this.canvas);
     this.ctx = this.canvas.getContext("2d");
 
+    // 2. Setup UI Elements
     this.createCloseButton();
-
+    // Delay setup to ensure DOM is ready, but also check immediately
     setTimeout(() => this.setupClue(), 1000);
 
-    // OPTIMIZATION: Debounce resize
+    // 3. Resize Listener
     window.addEventListener(
       "resize",
       debounce(() => this.resize(), 200)
     );
 
-    // Passive: false is required so we can conditionally call preventDefault()
+    // 4. Touch Listeners
     window.addEventListener("touchstart", (e) => this.handleStart(e), {
       passive: false,
     });
@@ -114,34 +116,65 @@ export class NeonSling {
   }
 
   setupClue() {
+    // Try to find existing clue element
     this.clueElement = document.getElementById("sling-clue");
-    if (this.clueElement) {
-      this.clueElement.style.position = "relative";
-      this.clueElement.style.zIndex = "9999";
 
-      this.clueElement.addEventListener("click", (e) => {
-        this.chargeSystem();
-      });
-      this.clueElement.addEventListener(
-        "touchstart",
-        (e) => {
-          // e.preventDefault(); // removed to allow scrolling interactions
-          this.chargeSystem();
-        },
-        { passive: true }
-      );
+    // If it doesn't exist, CREATE IT dynamically
+    if (!this.clueElement) {
+      this.clueElement = document.createElement("div");
+      this.clueElement.id = "sling-clue";
+      this.clueElement.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        font-family: 'Space Mono', monospace;
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.3);
+        z-index: 9999;
+        pointer-events: auto;
+        padding: 10px;
+        border: 1px dashed rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(2px);
+        border-radius: 4px;
+        user-select: none;
+        transition: all 0.3s ease;
+      `;
+      this.clueElement.innerText = " :: [K]inetic: 0%";
+      document.body.appendChild(this.clueElement);
     }
+
+    // Attach listeners
+    this.clueElement.addEventListener("click", (e) => {
+      this.chargeSystem();
+    });
+    this.clueElement.addEventListener(
+      "touchstart",
+      (e) => {
+        this.chargeSystem();
+      },
+      { passive: true }
+    );
   }
 
   chargeSystem() {
     this.tapCount++;
     const pct = Math.min(100, this.tapCount * 20);
-    this.clueElement.innerText = ` :: [K]inetic: ${pct}%`;
+
+    // Human-like system feedback
+    if (this.tapCount === 1) {
+      this.clueElement.innerText = ` :: [K]inetic: INITIATING... ${pct}%`;
+    } else if (this.tapCount < 5) {
+      this.clueElement.innerText = ` :: [K]inetic: CHARGING... ${pct}%`;
+    }
+
     this.clueElement.style.color = `rgb(${255}, ${255 - pct * 2.5}, ${
       255 - pct * 2.5
     })`;
+    this.clueElement.style.borderColor = `rgba(255, ${255 - pct * 2.5}, ${
+      255 - pct * 2.5
+    }, 0.5)`;
 
-    // FEATURE: Haptic click on charge
     if (navigator.vibrate) navigator.vibrate(5);
 
     if (this.tapTimer) clearTimeout(this.tapTimer);
@@ -150,7 +183,8 @@ export class NeonSling {
       if (!this.isActive) {
         this.tapCount = 0;
         this.clueElement.innerText = ` :: [K]inetic: 0%`;
-        this.clueElement.style.color = "";
+        this.clueElement.style.color = "rgba(255, 255, 255, 0.3)";
+        this.clueElement.style.borderColor = "rgba(255, 255, 255, 0.1)";
       }
     }, 800);
 
@@ -169,23 +203,24 @@ export class NeonSling {
       this.canvas.style.pointerEvents = "auto";
       this.closeBtn.style.display = "flex";
       this.startLoop();
-      // Updated feedback to explain the new interaction
-      this.showFeedback("SLINGSHOT READY: HOLD & DRAG");
+      this.showFeedback("SYSTEM: SLINGSHOT MECHANISM ENGAGED");
 
       if (this.clueElement) {
-        this.clueElement.innerText = " :: [K]inetic: ACTIVE";
+        this.clueElement.innerText = " :: [K]inetic: ONLINE";
         this.clueElement.style.color = "#00ff88";
+        this.clueElement.style.borderColor = "#00ff88";
         this.clueElement.style.textShadow = "0 0 10px #00ff88";
       }
     } else {
       this.canvas.style.opacity = "0";
       this.canvas.style.pointerEvents = "none";
       this.closeBtn.style.display = "none";
-      this.showFeedback("SYSTEM DISENGAGED");
+      this.showFeedback("SYSTEM: KINETIC DAMPENERS ENABLED");
 
       if (this.clueElement) {
         this.clueElement.innerText = " :: [K]inetic: 0%";
-        this.clueElement.style.color = "";
+        this.clueElement.style.color = "rgba(255, 255, 255, 0.3)";
+        this.clueElement.style.borderColor = "rgba(255, 255, 255, 0.1)";
         this.clueElement.style.textShadow = "";
       }
     }
@@ -203,20 +238,14 @@ export class NeonSling {
     if (e.target === this.closeBtn || this.closeBtn.contains(e.target)) return;
     if (e.target === this.clueElement) return;
 
-    // Do NOT preventDefault immediately. We need to see if user wants to scroll or sling.
-    // e.preventDefault();
-
     const t = e.changedTouches[0];
     this.dragStart = { x: t.clientX, y: t.clientY };
     this.dragCurrent = { x: t.clientX, y: t.clientY };
 
     this.isSlinging = false;
 
-    // Start a timer. If user holds without moving significantly, we assume Sling Intent.
-    // If they move quickly before timer, we assume Scroll Intent.
     this.slingTimer = setTimeout(() => {
       this.isSlinging = true;
-      // Optional: Trigger a small visual feedback here to indicate "Locked"
       if (navigator.vibrate) navigator.vibrate(20);
     }, 150);
   }
@@ -229,20 +258,15 @@ export class NeonSling {
     const dy = t.clientY - this.dragStart.y;
     const dist = Math.sqrt(dx * dx + dy * dy);
 
-    // If "Sling Mode" is locked in, we capture the event and prevent scroll
     if (this.isSlinging) {
       if (e.cancelable) e.preventDefault();
       this.dragCurrent = { x: t.clientX, y: t.clientY };
     } else {
-      // If we haven't locked yet, check if the user is moving (Scrolling)
       if (dist > 10) {
-        // User moved > 10px before the timer fired. Assume Scroll.
         if (this.slingTimer) {
           clearTimeout(this.slingTimer);
           this.slingTimer = null;
         }
-        // We do NOT update dragCurrent, effectively cancelling the sling visual
-        // We do NOT preventDefault, letting browser handle scroll
       }
     }
   }
@@ -250,13 +274,11 @@ export class NeonSling {
   handleEnd(e) {
     if (!this.isActive || !this.dragStart) return;
 
-    // Clear timer if it's still pending
     if (this.slingTimer) {
       clearTimeout(this.slingTimer);
       this.slingTimer = null;
     }
 
-    // Only fire if we were in "Sling Mode"
     if (this.isSlinging && this.dragCurrent) {
       const dx = this.dragStart.x - this.dragCurrent.x;
       const dy = this.dragStart.y - this.dragCurrent.y;
@@ -269,7 +291,6 @@ export class NeonSling {
           dx * 0.15,
           dy * 0.15
         );
-        // FEATURE: Haptic recoil
         if (navigator.vibrate) navigator.vibrate(40);
       }
     }
@@ -325,7 +346,6 @@ export class NeonSling {
 
     this.ctx.clearRect(0, 0, this.width, this.height);
 
-    // Only draw the drag line if we are actively slinging
     if (this.isSlinging && this.dragStart && this.dragCurrent) {
       this.ctx.beginPath();
       this.ctx.moveTo(this.dragStart.x, this.dragStart.y);

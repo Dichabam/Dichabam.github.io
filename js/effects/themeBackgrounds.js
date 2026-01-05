@@ -1,11 +1,9 @@
 import { state } from "../core/state.js";
-import { MatrixEffect } from "./matrixEffect.js"; 
-
+import { MatrixEffect } from "./matrixEffect.js";
 
 let canvas, ctx;
 let animationId;
 let width, height;
-
 
 let matrixInstance = null;
 
@@ -25,6 +23,9 @@ let mouse = {
 let cyberParticles = [];
 let cyberNodes = [];
 
+// New: Store the hint element
+let overrideHint = null;
+
 export function initThemeBackgrounds() {
   canvas = document.createElement("canvas");
   canvas.id = "theme-bg-canvas";
@@ -38,6 +39,9 @@ export function initThemeBackgrounds() {
 
   matrixInstance = new MatrixEffect(canvas);
 
+  // 1. Setup Clue/Hint for System Override
+  setupOverrideHint();
+
   resize();
   window.addEventListener("resize", resize);
 
@@ -48,14 +52,22 @@ export function initThemeBackgrounds() {
     state.theme = e.detail;
 
     if (state.theme === "retro") {
-
       if (!matrixInstance.isRunning) {
         matrixInstance.start();
       }
+      if (overrideHint) {
+        overrideHint.innerHTML =
+          ":: SYSTEM OVERRIDE: <span style='color:#0f0'>ACTIVE</span>";
+        overrideHint.style.color = "#0f0";
+      }
     } else {
-
       if (matrixInstance.isRunning) {
         matrixInstance.stop();
+      }
+      // Reset hint
+      if (overrideHint) {
+        overrideHint.innerHTML = ":: SYSTEM INTEGRITY: 100%";
+        overrideHint.style.color = "rgba(255,255,255,0.3)";
       }
     }
 
@@ -63,6 +75,37 @@ export function initThemeBackgrounds() {
   });
 
   animate();
+}
+
+function setupOverrideHint() {
+  overrideHint = document.createElement("div");
+  overrideHint.className = "system-integrity-clue";
+  overrideHint.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        font-family: 'Space Mono', monospace;
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.3);
+        z-index: 50;
+        pointer-events: none;
+        opacity: 0.6;
+        letter-spacing: 1px;
+    `;
+  overrideHint.innerHTML = ":: SYSTEM INTEGRITY: 100%";
+  document.body.appendChild(overrideHint);
+
+  // Occasional glitch hint
+  setInterval(() => {
+    if (state.theme !== "retro" && Math.random() > 0.8) {
+      const originalText = overrideHint.innerHTML;
+      overrideHint.innerHTML =
+        ":: SYSTEM INTEGRITY: <span style='color:#ff0055'>WARN</span>";
+      setTimeout(() => {
+        if (state.theme !== "retro") overrideHint.innerHTML = originalText;
+      }, 200);
+    }
+  }, 12000);
 }
 
 function resize() {
@@ -99,7 +142,6 @@ function updateMouse(x, y) {
   }
 }
 
-
 function initCyber() {
   cyberParticles = [];
   cyberNodes = [];
@@ -126,8 +168,6 @@ function initCyber() {
     else p.vx = Math.random() > 0.5 ? 2 : -2;
   }
 }
-
-
 
 function animate() {
   if (!state.effectsEnabled) {
@@ -168,7 +208,6 @@ function animate() {
 
   animationId = requestAnimationFrame(animate);
 }
-
 
 function drawCyber() {
   ctx.fillStyle = "rgba(5, 5, 5, 0.15)";
