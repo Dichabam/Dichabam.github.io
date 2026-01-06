@@ -28,7 +28,7 @@ export function initBackground() {
 
   // 1. Setup Scene
   scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x000000, 0.009);
+  scene.fog = new THREE.FogExp2(0x000000, 0.008);
 
   // 2. Setup Camera
   camera = new THREE.PerspectiveCamera(
@@ -53,7 +53,7 @@ export function initBackground() {
   container.appendChild(renderer.domElement);
 
   // 4. Lights
-  const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
   scene.add(ambientLight);
 
   const dirLight = new THREE.DirectionalLight(0xffffff, 2);
@@ -151,7 +151,7 @@ function loadModel() {
       model.position.sub(center);
 
       // Keep model size (150)
-      model.scale.setScalar(430);
+      model.scale.setScalar(395);
 
       scene.add(model);
       console.log("Model loaded.");

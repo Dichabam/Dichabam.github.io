@@ -20,7 +20,6 @@ import { NeuralSwarm } from "./effects/neuralSwarm.js";
 import { ScrollTransitions } from "./effects/scrollTransitions.js";
 import { Loader } from "./ui/loader.js";
 import { TouchRipple } from "./effects/touchRipple.js";
-import { NeonSling } from "./effects/neonSling.js";
 import { ConfettiButton } from "./effects/confettiButton.js";
 import { DecryptedText } from "./effects/decryptedText.js";
 import { VariableProximity } from "./effects/variableProximity.js"; // New Import
@@ -46,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
     new WireframeMode();
     new NeuralSwarm();
     new TouchRipple();
-    new NeonSling();
+   
     new ConfettiButton();
 
     setTimeout(() => {
