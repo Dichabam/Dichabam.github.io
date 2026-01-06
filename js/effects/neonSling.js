@@ -46,7 +46,6 @@ export class NeonSling {
     this.ctx = this.canvas.getContext("2d");
 
     // 2. Setup Clue (The "Button")
-    // Wait for DOM to be fully ready to find the footer
     if (document.readyState === "loading") {
       document.addEventListener("DOMContentLoaded", () => this.setupClue());
     } else {
@@ -80,7 +79,6 @@ export class NeonSling {
   }
 
   setupClue() {
-    // Prevent duplicate creation
     if (document.getElementById("sling-clue")) return;
 
     const findFooter = () => {
@@ -91,7 +89,6 @@ export class NeonSling {
       if (footer) {
         this.createClueInFooter(footer);
       } else {
-        // Retry if footer not found yet (e.g. dynamic content)
         setTimeout(findFooter, 500);
       }
     };
@@ -103,13 +100,12 @@ export class NeonSling {
     this.clueElement = document.createElement("div");
     this.clueElement.id = "sling-clue";
 
-    // Ensure footer can position absolute children
     const computedStyle = window.getComputedStyle(footer);
     if (computedStyle.position === "static") {
       footer.style.position = "relative";
     }
 
-    // Centered at the bottom of the footer
+    // Initial State: Hidden in footer (Absolute)
     this.clueElement.style.cssText = `
       position: absolute;
       bottom: 10px;
@@ -121,7 +117,7 @@ export class NeonSling {
       letter-spacing: 2px;
       color: rgba(255, 255, 255, 0.15);
       cursor: pointer;
-      z-index: 100;
+      z-index: 10001;
       user-select: none;
       padding: 10px 20px;
       white-space: nowrap;
@@ -132,19 +128,15 @@ export class NeonSling {
 
     footer.appendChild(this.clueElement);
 
-    // Click Logic for Single vs Double Click
     this.clueElement.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
       this.handleClueInteraction();
     });
 
-    // Touch support for the button specifically
     this.clueElement.addEventListener(
       "touchstart",
       (e) => {
-        // We rely on the click event that usually follows touch,
-        // but we prevent propagation to avoid firing slingshot logic
         e.stopPropagation();
       },
       { passive: false }
@@ -152,41 +144,44 @@ export class NeonSling {
   }
 
   handleClueInteraction() {
+    // FIX 1: If active, STOP immediately on Single Click.
+    // No need to double-click to stop.
+    if (this.isActive) {
+      this.clickCount = 0;
+      if (this.clickTimer) clearTimeout(this.clickTimer);
+      this.toggle();
+      return;
+    }
+
+    // Original Secret Logic: Double Click to START
     this.clickCount++;
 
     if (this.clickCount === 1) {
-      // Wait to see if it's a double click
       this.clickTimer = setTimeout(() => {
         this.clickCount = 0;
-        this.triggerSingleClickEffect(); // Single Click Action
-      }, 300); // 300ms delay window
+        this.triggerSingleClickEffect();
+      }, 300);
     } else if (this.clickCount === 2) {
-      // Double click detected
       clearTimeout(this.clickTimer);
       this.clickCount = 0;
-      this.toggle(); // Double Click Action
+      this.toggle();
     }
   }
 
   triggerSingleClickEffect() {
-    // Visual Ripple/Glow Effect without toggling state
     if (!this.clueElement) return;
 
-    const originalColor = this.isActive
-      ? "#ff0055"
-      : "rgba(255, 255, 255, 0.15)";
-    const originalShadow = this.isActive ? "0 0 10px #ff0055" : "none";
-
-    // Flash Effect
+    // Visual Ripple
+    const originalColor = "rgba(255, 255, 255, 0.15)";
     this.clueElement.style.color = "#00ff88";
     this.clueElement.style.textShadow = "0 0 15px #00ff88";
 
     if (navigator.vibrate) navigator.vibrate(5);
 
     setTimeout(() => {
-      if (this.clueElement) {
+      if (this.clueElement && !this.isActive) {
         this.clueElement.style.color = originalColor;
-        this.clueElement.style.textShadow = originalShadow;
+        this.clueElement.style.textShadow = "none";
       }
     }, 400);
   }
@@ -195,7 +190,7 @@ export class NeonSling {
     this.isActive = !this.isActive;
 
     if (this.isActive) {
-      // Activate
+      // --- ACTIVATE ---
       this.canvas.style.opacity = "1";
       this.canvas.style.pointerEvents = "auto";
       this.startLoop();
@@ -205,10 +200,16 @@ export class NeonSling {
         this.clueElement.innerText = "STOP";
         this.clueElement.style.color = "#ff0055";
         this.clueElement.style.textShadow = "0 0 10px #ff0055";
+
+        // FIX 2: Switch to FIXED position so it stays on screen
+        // even if user scrolls up away from the footer.
+        this.clueElement.style.position = "fixed";
+        this.clueElement.style.bottom = "30px"; // Slightly higher
+        this.clueElement.style.zIndex = "10001"; // Force on top
       }
       if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
     } else {
-      // Deactivate
+      // --- DEACTIVATE ---
       this.canvas.style.opacity = "0";
       this.canvas.style.pointerEvents = "none";
       this.showFeedback("SYSTEM: DAMPENERS ENABLED");
@@ -217,6 +218,10 @@ export class NeonSling {
         this.clueElement.innerText = "PLAY";
         this.clueElement.style.color = "rgba(255, 255, 255, 0.15)";
         this.clueElement.style.textShadow = "none";
+
+        // Return to Footer (Absolute)
+        this.clueElement.style.position = "absolute";
+        this.clueElement.style.bottom = "10px";
       }
       if (navigator.vibrate) navigator.vibrate(50);
     }
@@ -238,7 +243,7 @@ export class NeonSling {
 
   handleStart(e) {
     if (!this.isActive) return;
-    // Important: Don't start slinging if clicking the toggle button
+    // Don't sling if clicking the button
     if (e.target === this.clueElement || this.clueElement?.contains(e.target))
       return;
 
@@ -248,7 +253,6 @@ export class NeonSling {
 
     this.isSlinging = false;
 
-    // Small delay to distinguish tap from drag
     this.slingTimer = setTimeout(() => {
       this.isSlinging = true;
       if (navigator.vibrate) navigator.vibrate(20);
@@ -267,7 +271,6 @@ export class NeonSling {
       if (e.cancelable) e.preventDefault();
       this.dragCurrent = coords;
     } else {
-      // If moved significantly before timer fires, cancel sling (it's likely a scroll)
       if (dist > 10) {
         if (this.slingTimer) {
           clearTimeout(this.slingTimer);
