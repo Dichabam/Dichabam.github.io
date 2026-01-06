@@ -16,7 +16,6 @@ export function initBackground() {
     return;
   }
 
-  // Check for dependencies
   const hasExtras = THREE.GLTFLoader && THREE.OrbitControls;
   if (!hasExtras) {
     console.warn(
@@ -26,10 +25,9 @@ export function initBackground() {
 
   // 1. Setup Scene
   scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x000000, 0.00899);
+  scene.fog = new THREE.FogExp2(0x000000, 0.009);
 
   // 2. Setup Camera
-  // Z=500 matches the particle scale.
   camera = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
@@ -86,7 +84,12 @@ export function initBackground() {
 }
 
 function setupControls() {
-  // CHANGED: Listen to document.body so clicks work "through" the website content
+  // FIX: Disable controls on mobile (< 768px) to allow page scrolling
+  if (window.innerWidth < 768) {
+    return;
+  }
+
+  // On Desktop, listen to body so we can click "through" the content
   controls = new THREE.OrbitControls(camera, document.body);
 
   controls.enableDamping = true;
@@ -107,13 +110,11 @@ function loadModel() {
     (gltf) => {
       model = gltf.scene;
 
-      // Auto-center
       const box = new THREE.Box3().setFromObject(model);
       const center = box.getCenter(new THREE.Vector3());
       model.position.sub(center);
 
-      // Scale to match camera Z=500
-      model.scale.setScalar(500);
+      model.scale.setScalar(450);
 
       scene.add(model);
       console.log("Model loaded.");
@@ -124,9 +125,9 @@ function loadModel() {
 }
 
 function createParticles() {
-  // Standard Vortex Logic (No mouse interaction)
+  // Standard Vortex Logic
   const isMobile = window.innerWidth < 768;
-  const particleCount = isMobile ? 1500 : 5500;
+  const particleCount = isMobile ? 1500 : 4000;
 
   const geometry = new THREE.BufferGeometry();
   const positions = new Float32Array(particleCount * 3);
@@ -188,7 +189,7 @@ function createParticles() {
       void main() {
         vec3 pos = position;
         
-        // 1. ROTATION
+        // Rotation
         float angle = uTime * 0.1 + (pos.z * 0.001);
         float s = sin(angle);
         float c = cos(angle);
@@ -197,7 +198,7 @@ function createParticles() {
         pos.x = x;
         pos.y = y;
 
-        // 2. PULSE
+        // Pulse
         pos += normalize(pos) * sin(uTime * 0.5 + aRandom.x * 10.0) * 10.0;
 
         vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
@@ -251,8 +252,12 @@ function animate() {
     particles.material.uniforms.uTime.value = time;
   }
 
+  // UPDATED: Handle controls OR manual fallback
   if (controls) {
     controls.update();
+  } else if (model) {
+    // Mobile Fallback: Manually rotate the model since OrbitControls are disabled
+    model.rotation.y += 0.002;
   }
 
   renderer.render(scene, camera);
