@@ -23,6 +23,9 @@ export function initBackground() {
     );
   }
 
+  // --- ALLOW CLICKS TO PASS THROUGH LAYOUT ---
+  injectPointerEventsCSS();
+
   // 1. Setup Scene
   scene = new THREE.Scene();
   scene.fog = new THREE.FogExp2(0x000000, 0.009);
@@ -41,6 +44,12 @@ export function initBackground() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.outputEncoding = THREE.sRGBEncoding;
+
+  // Ensure canvas is background
+  renderer.domElement.style.position = "fixed";
+  renderer.domElement.style.top = "0";
+  renderer.domElement.style.left = "0";
+  renderer.domElement.style.zIndex = "-1";
   container.appendChild(renderer.domElement);
 
   // 4. Lights
@@ -83,22 +92,49 @@ export function initBackground() {
   animate();
 }
 
+// --- CSS INJECTION FOR INTERACTION ---
+function injectPointerEventsCSS() {
+  const styleId = "interactive-bg-style";
+  if (document.getElementById(styleId)) return;
+
+  const style = document.createElement("style");
+  style.id = styleId;
+  style.textContent = `
+        /* Make layout transparent to clicks so they hit body/canvas */
+        main, section, header, footer, .nav-wrapper, .hero-content {
+            pointer-events: none !important;
+        }
+        /* Re-enable clicks for interactive elements inside those sections */
+        a, button, input, textarea, select, 
+        .card, .project-card, .hover-trigger, 
+        .pill-link, .game-window, .modal-content, 
+        .settings-btn, .cv-container, .glass-surface, .settings-wrapper {
+            pointer-events: auto !important;
+        }
+        /* Settings button specific fix */
+        #settings-btn {
+            pointer-events: auto !important;
+            z-index: 1000;
+        }
+    `;
+  document.head.appendChild(style);
+}
+
 function setupControls() {
-  // FIX: Disable controls on mobile (< 768px) to allow page scrolling
+  // REQUIREMENT: Feature on PC only.
   if (window.innerWidth < 768) {
+    // Mobile: Do not initialize controls.
+    // This ensures scrolling works and model spins automatically in animate()
     return;
   }
 
-  // On Desktop, listen to body so we can click "through" the content
+  // Desktop: Attach to document.body for mouse interaction
   controls = new THREE.OrbitControls(camera, document.body);
 
   controls.enableDamping = true;
   controls.dampingFactor = 0.05;
-
-  // Interaction Settings: Rotate ONLY
   controls.enableZoom = false;
   controls.enablePan = false;
-
   controls.autoRotate = true;
   controls.autoRotateSpeed = 0.5;
 }
@@ -114,7 +150,8 @@ function loadModel() {
       const center = box.getCenter(new THREE.Vector3());
       model.position.sub(center);
 
-      model.scale.setScalar(450);
+      // Keep model size (150)
+      model.scale.setScalar(430);
 
       scene.add(model);
       console.log("Model loaded.");
@@ -125,9 +162,9 @@ function loadModel() {
 }
 
 function createParticles() {
-  // Standard Vortex Logic
   const isMobile = window.innerWidth < 768;
-  const particleCount = isMobile ? 1500 : 4000;
+  // REQUIREMENT: High particle count
+  const particleCount = isMobile ? 2500 : 7000;
 
   const geometry = new THREE.BufferGeometry();
   const positions = new Float32Array(particleCount * 3);
@@ -140,9 +177,11 @@ function createParticles() {
 
   for (let i = 0; i < particleCount; i++) {
     const i3 = i * 3;
-    const radius = Math.random() * Math.random() * 400 + 50;
+
+    // REQUIREMENT: Cover whole background
+    const radius = Math.random() * 500 + 10;
     const angle = i * 0.1 + Math.random() * Math.PI * 2;
-    const depth = (Math.random() - 0.5) * 1000;
+    const depth = (Math.random() - 0.5) * 1500;
 
     positions[i3] = Math.cos(angle) * radius;
     positions[i3 + 1] = Math.sin(angle) * radius;
@@ -155,7 +194,7 @@ function createParticles() {
     sizes[i] = Math.random();
 
     const mixedColor = colorInside.clone();
-    mixedColor.lerp(colorOutside, radius / 400);
+    mixedColor.lerp(colorOutside, radius / 1500);
 
     colors[i3] = mixedColor.r;
     colors[i3 + 1] = mixedColor.g;
@@ -207,7 +246,7 @@ function createParticles() {
         gl_PointSize = (1200.0 * aSize * uPixelRatio) / -mvPosition.z;
         
         float dist = length(mvPosition.xyz);
-        vAlpha = 1.0 - smoothstep(400.0, 900.0, dist);
+        vAlpha = 1.0 - smoothstep(1000.0, 2500.0, dist);
         vColor = color;
       }
     `,
@@ -252,11 +291,11 @@ function animate() {
     particles.material.uniforms.uTime.value = time;
   }
 
-  // UPDATED: Handle controls OR manual fallback
   if (controls) {
+    // Desktop: Update OrbitControls
     controls.update();
   } else if (model) {
-    // Mobile Fallback: Manually rotate the model since OrbitControls are disabled
+    // Mobile: Manual Auto-Rotation since controls are disabled
     model.rotation.y += 0.002;
   }
 

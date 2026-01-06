@@ -19,8 +19,6 @@ export class NeonSling {
     this.slingTimer = null;
 
     // Interaction properties
-    this.clickCount = 0;
-    this.clickTimer = null;
     this.clueElement = null;
 
     this.colors = ["#ff00ff", "#00ffff", "#ffff00", "#ff0055"];
@@ -128,62 +126,13 @@ export class NeonSling {
 
     footer.appendChild(this.clueElement);
 
+    // FIX: Use ONLY 'click' to avoid double-firing on mobile (touchstart + click)
+    // Mobile browsers emulate click after a tap, so this covers both.
     this.clueElement.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
-      this.handleClueInteraction();
+      this.toggle();
     });
-
-    this.clueElement.addEventListener(
-      "touchstart",
-      (e) => {
-        e.stopPropagation();
-      },
-      { passive: false }
-    );
-  }
-
-  handleClueInteraction() {
-    // FIX 1: If active, STOP immediately on Single Click.
-    // No need to double-click to stop.
-    if (this.isActive) {
-      this.clickCount = 0;
-      if (this.clickTimer) clearTimeout(this.clickTimer);
-      this.toggle();
-      return;
-    }
-
-    // Original Secret Logic: Double Click to START
-    this.clickCount++;
-
-    if (this.clickCount === 1) {
-      this.clickTimer = setTimeout(() => {
-        this.clickCount = 0;
-        this.triggerSingleClickEffect();
-      }, 300);
-    } else if (this.clickCount === 2) {
-      clearTimeout(this.clickTimer);
-      this.clickCount = 0;
-      this.toggle();
-    }
-  }
-
-  triggerSingleClickEffect() {
-    if (!this.clueElement) return;
-
-    // Visual Ripple
-    const originalColor = "rgba(255, 255, 255, 0.15)";
-    this.clueElement.style.color = "#00ff88";
-    this.clueElement.style.textShadow = "0 0 15px #00ff88";
-
-    if (navigator.vibrate) navigator.vibrate(5);
-
-    setTimeout(() => {
-      if (this.clueElement && !this.isActive) {
-        this.clueElement.style.color = originalColor;
-        this.clueElement.style.textShadow = "none";
-      }
-    }, 400);
   }
 
   toggle() {
@@ -201,11 +150,10 @@ export class NeonSling {
         this.clueElement.style.color = "#ff0055";
         this.clueElement.style.textShadow = "0 0 10px #ff0055";
 
-        // FIX 2: Switch to FIXED position so it stays on screen
-        // even if user scrolls up away from the footer.
+        // Switch to FIXED position
         this.clueElement.style.position = "fixed";
-        this.clueElement.style.bottom = "30px"; // Slightly higher
-        this.clueElement.style.zIndex = "10001"; // Force on top
+        this.clueElement.style.bottom = "30px";
+        this.clueElement.style.zIndex = "10001";
       }
       if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
     } else {
