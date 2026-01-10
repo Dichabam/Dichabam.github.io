@@ -1,28 +1,64 @@
 .nav-wrapper {
     position: fixed;
-    top: 30px;
+    top: 40px; 
     left: 0;
     width: 100%;
     display: flex;
     justify-content: center;
     z-index: 100;
     pointer-events: none;
-    padding: 0 10px;
+    padding: 0 20px;
+    transition: top 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
+.nav-wrapper.scrolled-wrapper {
+    top: 20px;
+}
+
+/* --- Main Container --- */
 .pill-nav-container {
     pointer-events: auto;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px; 
-    transition: gap 0.5s cubic-bezier(0.23, 1, 0.320, 1);
+    
+    /* Initial State: Wide Gap */
+    gap: 40px; 
+    padding: 0; 
+    
+    transform-origin: center top;
+    transform: scale(1) translateY(0);
+    
+    transition: 
+        gap 0.6s cubic-bezier(0.19, 1, 0.22, 1),
+        padding 0.6s cubic-bezier(0.19, 1, 0.22, 1),
+        background-color 0.4s ease,
+        border 0.4s ease,
+        box-shadow 0.4s ease,
+        transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    border-radius: 999px;
+    background: transparent;
 }
 
-.pill-nav-container.disconnected {
-    gap: 30px; 
+/* --- SCROLLED STATE (Merged) --- */
+.pill-nav-container.scrolled {
+    gap: 4px; /* Tight gap so they touch/merge */
+    padding: 5px; /* Add padding to contain them nicely */
+    
+    background: rgba(10, 10, 10, 0.85);
+    -webkit-backdrop-filter: blur(25px) saturate(200%);
+    backdrop-filter: blur(25px) saturate(200%);
+    
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 
+        0 20px 40px -10px rgba(0, 0, 0, 0.5),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    
+    transform: scale(0.98) translateY(-5px);
 }
 
+/* --- Logo Wrapper --- */
 .pill-logo-wrapper {
     width: 60px;  
     height: 60px; 
@@ -31,84 +67,159 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    transition: all 0.5s cubic-bezier(0.23, 1, 0.320, 1);
     z-index: 10;
-    border: 1px solid var(--glass-border);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    
+    /* Default Style */
+    background: rgba(255, 255, 255, 0.03);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    
+    transition: 
+        width 0.6s cubic-bezier(0.19, 1, 0.22, 1),
+        height 0.6s cubic-bezier(0.19, 1, 0.22, 1),
+        background 0.4s ease,
+        border 0.4s ease,
+        box-shadow 0.4s ease,
+        transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .pill-logo-wrapper img {
     width: 100%; height: 100%; object-fit: cover;
     border-radius: 50%;
+    will-change: transform;
+    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+/* Logo Hover */
 .pill-logo-wrapper:hover {
-    transform: rotate(360deg) scale(1.5);
+    transform: scale(1.15);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+.pill-logo-wrapper:hover img {
+    transform: rotate(180deg);
 }
 
-.pill-logo-wrapper:hover + .pill-list {
-    transform: translateX(15px);
+/* Logo Scrolled State */
+.pill-nav-container.scrolled .pill-logo-wrapper {
+    /* Matches list height for perfect alignment */
+    width: 44px; 
+    height: 44px;
+    background: rgba(255, 255, 255, 0.05); 
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: none;
 }
 
+/* --- Navigation List --- */
 .pill-list {
     list-style: none;
     display: flex;
     align-items: center;
-    gap: 2px;
-    padding: 4px 6px; 
+    gap: 0px; 
+    
+    padding: 0 6px; 
+    
+    /* TALLER HEIGHT (requested) */
+    height: 54px; 
     border-radius: 999px; 
-    transition: all 0.5s cubic-bezier(0.23, 1, 0.320, 1);
-    opacity: 1;
-    transform: translateX(0);
-    max-width: 500px; 
-    height: 44px; 
-    border: 1px solid rgba(255, 255, 255, 0.08); 
+    
+    background: rgba(255, 255, 255, 0.03);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+
+    transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
+/* List Scrolled State */
+.pill-nav-container.scrolled .pill-list {
+    background: transparent;
+    border: 1px solid transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    
+    /* Shrink to match logo when merged */
+    height: 44px; 
+    padding: 0;
+}
+
+/* --- Links --- */
 .pill-link {
     position: relative;
-    padding: 8px 16px; 
+    /* REDUCED WIDTH: Smaller padding (16px instead of 20-24px) */
+    padding: 0 16px;
+    height: 100%; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
     border-radius: 999px;
-    
-    color: var(--text); 
-    
+    color: var(--text-muted); 
     text-decoration: none;
-    font-weight: 500;
-    font-size: 13px;
-    font-family: 'Montserrat', sans-serif; /* Added Montserrat Font */
+    font-weight: 600;
+    font-size: 13px; 
+    font-family: 'Montserrat', sans-serif;
     white-space: nowrap;
-    overflow: hidden;
-    transition: color 0.3s;
-    display: block;
+    
+    isolation: isolate; 
+    
+    transition: color 0.2s ease, padding 0.5s ease;
     z-index: 2;
-    cursor: none;
+    cursor: pointer;
+}
+
+.pill-nav-container.scrolled .pill-link {
+    /* Even smaller padding when merged to save space */
+    padding: 0 14px; 
+    font-size: 13px;
+    color: #bbb;
 }
 
 .pill-link:hover {
-    color: var(--dark);
+    color: #fff;
 }
 
+/* Hover Effect (GSAP Controlled) */
 .hover-circle {
     position: absolute;
-    background: var(--accent); 
-    opacity: 0.8;
-    
+    background: rgba(255, 255, 255, 0.15); 
     border-radius: 999px;
     pointer-events: none;
-    z-index: -1;
-    top: 0; left: 0; width: 100%; height: 100%;
-    transform: scale(0);
-    transform-origin: center;
+    z-index: -1; 
+    
+    top: 50%; left: 50%; 
+    
+    width: 100%; height: 150%; 
+    
+    /* Default state: hidden */
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, -50%) scale(0.5);
 }
 
+/* Game Button */
+#nav-game-btn {
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* --- Mobile Responsiveness --- */
 @media (max-width: 900px) {
-    .nav-wrapper { top: 15px; padding: 0 5px; }
-    .pill-nav-container { gap: 2px; }
-    .pill-list { padding: 4px 6px; }
-    .pill-link { padding: 6px 10px; font-size: 12px; }
-    .pill-logo-wrapper { width: 44px; height: 44px; }
-}
-
-@media (max-width: 400px) {
-    .pill-link { padding: 6px 10px; font-size: 11px; }
+    .nav-wrapper { top: 25px; padding: 0 15px; }
+    
+    .pill-nav-container { gap: 15px; } 
+    .pill-nav-container.scrolled { gap: 4px; }
+    
+    /* Mobile sizes: slightly smaller than desktop but proportional */
+    .pill-logo-wrapper { width: 50px; height: 50px; }
+    .pill-list { height: 50px; } 
+    
+    .pill-link { padding: 0 12px; font-size: 12px; }
+    .pill-nav-container.scrolled .pill-link { padding: 0 10px; }
 }

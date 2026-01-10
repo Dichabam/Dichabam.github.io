@@ -10,13 +10,9 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- Updated to Import Montserrat (Full variable weight range) -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
-    
-    <!-- Devicon (For accurate C# and R logos) -->
     <link rel="stylesheet" type='text/css' href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
 
     <link rel="stylesheet" href="css/reset.css">
@@ -65,11 +61,12 @@
     <div id="lights"></div>
 
     <div class="nav-wrapper">
+        <!-- REMOVED 'glass-surface' class from children to allow CSS 'scrolled' state to override backgrounds cleanly -->
         <nav class="pill-nav-container" id="main-nav" aria-label="Main Navigation">
-            <div class="pill-logo-wrapper glass-surface hover-trigger" id="nav-logo" title="Home">
+            <div class="pill-logo-wrapper hover-trigger" id="nav-logo" title="Home">
                <img src="./assets/images/d.png" alt="D" onerror="this.style.display='none'; this.parentNode.innerText='DM'" style="pointer-events: none;" width="60" height="60">
             </div>
-            <ul class="pill-list glass-surface">
+            <ul class="pill-list">
                 <li><a href="#hero" class="pill-link hover-trigger">Home</a></li>
                 <li><a href="#about" class="pill-link hover-trigger">About</a></li>
                 <li><a href="#work" class="pill-link hover-trigger">Work</a></li>
@@ -329,7 +326,7 @@
                         <p class="scroll-reveal" style="margin-bottom: 20px; color: var(--text-muted); font-size: 1.1rem;">
                             I have participated in the <strong>Entelect University Cup</strong> and the <strong>Resembler.Ai</strong> Hackathon, 
                             proving my ability to build scalable prototypes under pressure as well as work in a group.
-                        </>
+                        </p>
                         
                         <div class="skill-tags hover-trigger scroll-reveal">
                             <span class="skill-tag"><i class="devicon-python-plain"></i> Python</span>
