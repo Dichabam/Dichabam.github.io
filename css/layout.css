@@ -258,3 +258,18 @@ section {
 @media (max-width: 400px) {
     .hero-title { font-size: 2.8rem; }
 }
+
+.raised-text {
+    /* Keep your existing text shadow */
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.8);
+    
+    /* Add the frosted glass effect */
+    background: rgba(0, 0, 0, 0.2); /* Slight dark tint */
+    -webkit-backdrop-filter: blur(6px);      /* Blurs the background behind the text */
+    backdrop-filter: blur(6px); /* Safari support */
+    
+    /* Formatting to make the box look good */
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Subtle border shadow */
+}

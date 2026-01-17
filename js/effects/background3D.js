@@ -63,7 +63,7 @@ export function initBackground() {
   // 5. Create Elements
   createParticles();
   if (hasExtras) {
-    loadModel();
+    //loadModel();
     setupControls();
   }
 
@@ -139,10 +139,10 @@ function setupControls() {
   controls.autoRotateSpeed = 0.5;
 }
 
-function loadModel() {
+/* function loadModel() {
   const loader = new THREE.GLTFLoader();
   loader.load(
-    "./assets/models/model.glb",
+    "./assets/models/Unttled.glb",
     (gltf) => {
       model = gltf.scene;
 
@@ -151,7 +151,7 @@ function loadModel() {
       model.position.sub(center);
 
       // Keep model size (150)
-      model.scale.setScalar(395);
+      model.scale.setScalar(105);
 
       scene.add(model);
       console.log("Model loaded.");
@@ -159,7 +159,7 @@ function loadModel() {
     undefined,
     (error) => console.error("Model error:", error)
   );
-}
+} */
 
 function createParticles() {
   const isMobile = window.innerWidth < 768;
