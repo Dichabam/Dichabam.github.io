@@ -29,7 +29,7 @@ export class NeuralSwarm {
     document.body.appendChild(this.canvas);
     this.ctx = this.canvas.getContext("2d");
 
-    // OPTIMIZATION: Debounce resize
+   
     window.addEventListener(
       "resize",
       debounce(() => this.resize(), 200)

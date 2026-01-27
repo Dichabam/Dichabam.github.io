@@ -23,7 +23,6 @@ let mouse = {
 let cyberParticles = [];
 let cyberNodes = [];
 
-// New: Store the hint element
 let overrideHint = null;
 
 export function initThemeBackgrounds() {
@@ -39,7 +38,6 @@ export function initThemeBackgrounds() {
 
   matrixInstance = new MatrixEffect(canvas);
 
-  // 1. Setup Clue/Hint for System Override
   setupOverrideHint();
 
   resize();

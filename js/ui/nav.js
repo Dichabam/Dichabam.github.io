@@ -3,9 +3,8 @@ export function initNav() {
   const navContainer = document.getElementById("main-nav");
   const navWrapper = document.querySelector(".nav-wrapper");
 
-  // 1. Setup Hover Animations (Bouncy Pill Effect)
   navLinks.forEach((link) => {
-    // Ensure hover circle exists
+
     let circle = link.querySelector(".hover-circle");
     if (!circle) {
       circle = document.createElement("span");
@@ -13,9 +12,8 @@ export function initNav() {
       link.appendChild(circle);
     }
 
-    // Set initial state: Hidden and smaller
     gsap.set(circle, {
-      autoAlpha: 0, // Sets opacity:0 and visibility:hidden
+      autoAlpha: 0, 
       scale: 0.5,
       xPercent: -50,
       yPercent: -50,
@@ -23,14 +21,14 @@ export function initNav() {
       top: "50%",
     });
 
-    // Mouse Enter - Bouncy Expand
+
     link.addEventListener("mouseenter", () => {
       gsap.to(circle, {
-        autoAlpha: 1, // Show
+        autoAlpha: 1, 
         scale: 1,
         duration: 0.4,
         ease: "elastic.out(1, 0.5)",
-        overwrite: true, // Stop any conflicting animations immediately
+        overwrite: true, 
       });
       gsap.to(link, {
         color: "#fff",
@@ -39,10 +37,10 @@ export function initNav() {
       });
     });
 
-    // Mouse Leave - Quick Shrink & Disappear
+   
     link.addEventListener("mouseleave", () => {
       gsap.to(circle, {
-        autoAlpha: 0, // Hide completely
+        autoAlpha: 0,
         scale: 0.5,
         duration: 0.2,
         ease: "power2.in",
@@ -55,7 +53,7 @@ export function initNav() {
       });
     });
 
-    // Click Effect - Quick Dip
+  
     link.addEventListener("mousedown", () => {
       gsap.to(link, { scale: 0.95, duration: 0.1, overwrite: true });
     });
@@ -65,7 +63,7 @@ export function initNav() {
     });
   });
 
-  // 2. Scroll Animation (The Flighty Merge)
+
   const SCROLL_THRESHOLD = 20;
 
   const handleScroll = () => {
@@ -82,10 +80,10 @@ export function initNav() {
 
   window.addEventListener("scroll", handleScroll, { passive: true });
 
-  // Initial check in case of reload
+
   handleScroll();
 
-  // 3. Logo Interaction
+
   const logo = document.getElementById("nav-logo");
   if (logo) {
     logo.addEventListener("click", () => {

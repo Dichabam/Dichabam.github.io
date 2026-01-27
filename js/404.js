@@ -10,7 +10,7 @@ const CONFIG = {
     bg: "#050505",
     snake: "#03b3c3", // var(--accent)
     head: "#fff",
-    food: "#00ff88", // Green data packet
+    food: "#00ff88", 
     grid: "rgba(255, 255, 255, 0.03)",
   },
 };
@@ -26,10 +26,10 @@ let isPlaying = false;
 let cellSize = 20;
 
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. Init Core UI effects from main project
+ 
   try {
     initCursor();
-    updateHoverTriggers(); // For buttons
+    updateHoverTriggers(); 
   } catch (e) {
     console.warn("Effects init failed:", e);
   }
@@ -42,7 +42,7 @@ function initGame() {
   canvas = document.getElementById("snakeCanvas");
   ctx = canvas.getContext("2d");
 
-  // Set fixed internal resolution for pixel look, scale via CSS
+ 
   canvas.width = CONFIG.cols * cellSize;
   canvas.height = CONFIG.rows * cellSize;
 
@@ -51,10 +51,10 @@ function initGame() {
 
   window.addEventListener("keydown", handleInput);
 
-  // Touch controls for mobile (Simple tap sides)
+
   canvas.addEventListener("touchstart", handleTouch, { passive: false });
 
-  drawGame(); // Draw initial static frame
+  drawGame(); 
 }
 
 function startGame() {
@@ -97,7 +97,7 @@ function gameOver() {
 function gameLoop() {
   direction = nextDirection;
 
-  // Calculate new head
+ 
   const head = { ...snake[0] };
 
   switch (direction) {
@@ -115,7 +115,6 @@ function gameLoop() {
       break;
   }
 
-  // Wrap Logic (Through Walls)
   if (head.x < 0) head.x = CONFIG.cols - 1;
   else if (head.x >= CONFIG.cols) head.x = 0;
 
@@ -130,24 +129,23 @@ function gameLoop() {
     }
   }
 
-  snake.unshift(head); // Add new head
+  snake.unshift(head); 
 
-  // Check Food
+
   if (head.x === food.x && head.y === food.y) {
-    score += 64; // 64 bytes
+    score += 64; 
     updateScore();
     spawnFood();
-    // Haptic feedback if available
+
     if (navigator.vibrate) navigator.vibrate(20);
   } else {
-    snake.pop(); // Remove tail if not eating
+    snake.pop(); 
   }
 
   drawGame();
 }
 
 function spawnFood() {
-  // Random position not on snake
   let valid = false;
   while (!valid) {
     food = {
@@ -159,11 +157,10 @@ function spawnFood() {
 }
 
 function drawGame() {
-  // Clear
+
   ctx.fillStyle = CONFIG.colors.bg;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Grid (Optional, for tech feel)
   ctx.strokeStyle = CONFIG.colors.grid;
   ctx.lineWidth = 1;
   ctx.beginPath();
@@ -181,7 +178,6 @@ function drawGame() {
   snake.forEach((part, index) => {
     ctx.fillStyle = index === 0 ? CONFIG.colors.head : CONFIG.colors.snake;
 
-    // Glitch effect for snake body
     if (index > 0 && Math.random() > 0.95) ctx.fillStyle = "#fff";
 
     ctx.fillRect(
@@ -192,7 +188,6 @@ function drawGame() {
     );
   });
 
-  // Food
   if (food) {
     ctx.fillStyle = CONFIG.colors.food;
     ctx.shadowColor = CONFIG.colors.food;
@@ -236,7 +231,6 @@ function handleTouch(e) {
   const centerX = rect.width / 2;
   const centerY = rect.height / 2;
 
-  // Simple 4-way touch controller logic relative to center
   const dx = x - centerX;
   const dy = y - centerY;
 

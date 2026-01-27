@@ -31,7 +31,6 @@ export function initCursor() {
     mouseY = e.clientY;
   });
 
-  // FEATURE: Reactive Click Animation
   document.addEventListener("mousedown", () => {
     if (cursor) cursor.classList.add("clicked");
   });

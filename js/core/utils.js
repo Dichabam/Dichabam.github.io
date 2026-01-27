@@ -2,7 +2,7 @@ export function lerp(a, b, t) {
   return a + (b - a) * t;
 }
 
-// Optimization: Prevents functions from firing too often (e.g., resize events)
+// Optim: Prevents functions from firing too often 
 export function debounce(func, wait) {
   let timeout;
   return function executedFunction(...args) {

@@ -29,7 +29,6 @@ export class VariableProximity {
     this.container.style.display = "inline-block";
     this.container.classList.add("variable-proximity-active");
 
-    // Split text into spans
     text.split("").forEach((char) => {
       const span = document.createElement("span");
       span.textContent = char;
@@ -48,14 +47,14 @@ export class VariableProximity {
       this.letterElements.push(span);
     });
 
-    // Bind Events
+    
     window.addEventListener("mousemove", (e) => {
       this.mouse.x = e.clientX;
       this.mouse.y = e.clientY;
       if (!this.isRunning) this.start();
     });
 
-    // Handle touch
+
     window.addEventListener(
       "touchmove",
       (e) => {
@@ -107,7 +106,7 @@ export class VariableProximity {
 
       let currentSettings = {};
 
-      // Interpolate
+ 
       for (const [axis, fromVal] of Object.entries(this.fromSettings)) {
         const toVal =
           this.toSettings[axis] !== undefined ? this.toSettings[axis] : fromVal;
@@ -116,7 +115,7 @@ export class VariableProximity {
         if (dist < this.radius) {
           const norm = Math.max(0, 1 - dist / this.radius);
 
-          // Falloff Logic
+        
           let t = norm;
           if (this.falloff === "exponential") t = norm * norm;
           if (this.falloff === "gaussian")

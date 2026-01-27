@@ -1,7 +1,7 @@
 import { state } from "../core/state.js";
 import { debounce } from "../core/utils.js";
 
-// Global variables
+
 let scene, camera, renderer, controls;
 let particles, model;
 let animationId;
@@ -23,14 +23,14 @@ export function initBackground() {
     );
   }
 
-  // --- ALLOW CLICKS TO PASS THROUGH LAYOUT ---
+ 
   injectPointerEventsCSS();
 
-  // 1. Setup Scene
+
   scene = new THREE.Scene();
   scene.fog = new THREE.FogExp2(0x000000, 0.008);
 
-  // 2. Setup Camera
+ 
   camera = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
@@ -39,20 +39,19 @@ export function initBackground() {
   );
   camera.position.z = 500;
 
-  // 3. Setup Renderer
+  
   renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.outputEncoding = THREE.sRGBEncoding;
 
-  // Ensure canvas is background
+  
   renderer.domElement.style.position = "fixed";
   renderer.domElement.style.top = "0";
   renderer.domElement.style.left = "0";
   renderer.domElement.style.zIndex = "-1";
   container.appendChild(renderer.domElement);
 
-  // 4. Lights
   const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
   scene.add(ambientLight);
 
@@ -60,14 +59,13 @@ export function initBackground() {
   dirLight.position.set(200, 500, 300);
   scene.add(dirLight);
 
-  // 5. Create Elements
+
   createParticles();
   if (hasExtras) {
-    //loadModel();
+    loadModel();
     setupControls();
   }
 
-  // 6. Event Listeners
   window.addEventListener("resize", debounce(onWindowResize, 200), false);
 
   window.addEventListener("toggle-effects", (e) => {
@@ -92,7 +90,6 @@ export function initBackground() {
   animate();
 }
 
-// --- CSS INJECTION FOR INTERACTION ---
 function injectPointerEventsCSS() {
   const styleId = "interactive-bg-style";
   if (document.getElementById(styleId)) return;
@@ -121,14 +118,13 @@ function injectPointerEventsCSS() {
 }
 
 function setupControls() {
-  // REQUIREMENT: Feature on PC only.
+
   if (window.innerWidth < 768) {
-    // Mobile: Do not initialize controls.
-    // This ensures scrolling works and model spins automatically in animate()
+ 
     return;
   }
 
-  // Desktop: Attach to document.body for mouse interaction
+ 
   controls = new THREE.OrbitControls(camera, document.body);
 
   controls.enableDamping = true;
@@ -139,10 +135,10 @@ function setupControls() {
   controls.autoRotateSpeed = 0.5;
 }
 
-/* function loadModel() {
+function loadModel() {
   const loader = new THREE.GLTFLoader();
   loader.load(
-    "./assets/models/Unttled.glb",
+    "./assets/models/Un.glb",
     (gltf) => {
       model = gltf.scene;
 
@@ -150,7 +146,6 @@ function setupControls() {
       const center = box.getCenter(new THREE.Vector3());
       model.position.sub(center);
 
-      // Keep model size (150)
       model.scale.setScalar(105);
 
       scene.add(model);
@@ -159,11 +154,10 @@ function setupControls() {
     undefined,
     (error) => console.error("Model error:", error)
   );
-} */
+} 
 
 function createParticles() {
   const isMobile = window.innerWidth < 768;
-  // REQUIREMENT: High particle count
   const particleCount = isMobile ? 2500 : 7000;
 
   const geometry = new THREE.BufferGeometry();
@@ -178,7 +172,6 @@ function createParticles() {
   for (let i = 0; i < particleCount; i++) {
     const i3 = i * 3;
 
-    // REQUIREMENT: Cover whole background
     const radius = Math.random() * 500 + 10;
     const angle = i * 0.1 + Math.random() * Math.PI * 2;
     const depth = (Math.random() - 0.5) * 1500;
@@ -292,10 +285,8 @@ function animate() {
   }
 
   if (controls) {
-    // Desktop: Update OrbitControls
     controls.update();
   } else if (model) {
-    // Mobile: Manual Auto-Rotation since controls are disabled
     model.rotation.y += 0.002;
   }
 

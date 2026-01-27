@@ -164,8 +164,11 @@
   border-top: none;
 }
 
+/*Notes*/
+
 canvas:not(#gameCanvas) {
-    filter: blur(1px); /* Increase this number for more blur */
-    transition: filter 0.5s ease; /* Smooth transition if you change it later */
-    opacity: 0.5; /* Optional: Dims the background slightly for extra contrast */
+    /*Notes*/
+    filter: blur(1px); /* Increase for more blur */
+    transition: filter 0.5s ease; /* Smooth transition*/
+    opacity: 0.5; /* Dims the background slightly for extra contrast */
 }

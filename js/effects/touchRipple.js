@@ -1,6 +1,6 @@
 import { state } from "../core/state.js";
-import { debounce } from "../core/utils.js"; // Optimization import
-
+import { debounce } from "../core/utils.js"; 
+//only for mobile
 export class TouchRipple {
   constructor() {
     this.isActive = false;

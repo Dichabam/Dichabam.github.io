@@ -7,7 +7,6 @@ export class Flashlight {
     this.mouseX = 0;
     this.mouseY = 0;
 
-    // Store previous positions to avoid unnecessary DOM updates
     this.currentX = 0;
     this.currentY = 0;
     this.animationId = null;
@@ -15,22 +14,22 @@ export class Flashlight {
     this.init();
   }
 
+  // feature only works on pc only
   init() {
     const isMobile =
       window.matchMedia("(hover: none)").matches ||
       window.matchMedia("(pointer: coarse)").matches;
     if (isMobile) return;
 
-    // 1. Setup Overlay
     this.overlay = document.createElement("div");
     this.overlay.id = "flashlight-overlay";
     this.overlay.style.willChange = "background";
     document.body.appendChild(this.overlay);
 
-    // 2. Setup Hint (Clue)
+
     this.setupHint();
 
-    // 3. Listeners
+
     window.addEventListener("keydown", (e) => {
       if (
         e.key.toLowerCase() === "f" &&
@@ -42,7 +41,6 @@ export class Flashlight {
     });
 
     window.addEventListener("mousemove", (e) => {
-      // Always track mouse for hint parallax even if not active
       this.mouseX = e.clientX;
       this.mouseY = e.clientY;
     });
@@ -68,7 +66,6 @@ export class Flashlight {
       ":: <span style='color:#00ff88'>[FOCUS]</span>";
     document.body.appendChild(this.hint);
 
-    // Fade hint out after 8 seconds, but bring it back if they hover near it
     setTimeout(() => {
       if (this.hint) this.hint.style.opacity = "0.2";
     }, 8000);
@@ -81,8 +78,6 @@ export class Flashlight {
       this.overlay.classList.add("active");
       this.startLoop();
       this.showPopup(true);
-
-      // Update hint to show how to exit
       if (this.hint) {
         this.hint.innerHTML =
           ":: FOCUS ACTIVE. PRESS <span style='color:#ff0055'>[F]</span> TO DISENGAGE";
@@ -93,7 +88,6 @@ export class Flashlight {
       this.stopLoop();
       this.showPopup(false);
 
-      // Revert hint
       if (this.hint) {
         this.hint.innerHTML =
           ":: <span style='color:#00ff88'>[FOCUS]</span>";
