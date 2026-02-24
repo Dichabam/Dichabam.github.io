@@ -68,7 +68,7 @@
     justify-content: center;
     flex-shrink: 0;
     z-index: 10;
-    cursor: pointer;
+    cursor: none;
     
     /* Default Style */
     background: rgba(255, 255, 255, 0.03);
@@ -122,7 +122,6 @@
     
     padding: 0 6px; 
     
-    /* TALLER HEIGHT (requested) */
     height: 54px; 
     border-radius: 999px; 
     
@@ -142,7 +141,6 @@
     box-shadow: none;
     backdrop-filter: none;
     
-    /* Shrink to match logo when merged */
     height: 44px; 
     padding: 0;
 }
@@ -150,7 +148,6 @@
 /* --- Links --- */
 .pill-link {
     position: relative;
-    /* REDUCED WIDTH: Smaller padding (16px instead of 20-24px) */
     padding: 0 16px;
     height: 100%; 
     display: flex;
@@ -169,7 +166,7 @@
     
     transition: color 0.2s ease, padding 0.5s ease;
     z-index: 2;
-    cursor: pointer;
+    cursor: none;
 }
 
 .pill-nav-container.scrolled .pill-link {
