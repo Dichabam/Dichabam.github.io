@@ -127,8 +127,8 @@ export class Flashlight {
       this.popup = document.createElement("div");
       this.popup.className = "feature-popup";
       this.popup.innerHTML = `
-        <h3>FOCUS MODE INITIALIZED</h3>
-        <p>Distractions masked. Light focus engaged.</p>
+        <h3>FLASHLIGHT MODE INITIALIZED</h3>
+        <p>Light Focus Engage. Just flash light where ever you want.</p>
         <p style="margin-top:5px; font-size: 0.75rem; color: #888;">// PRESS 'F' TO ABORT</p>
       `;
       document.body.appendChild(this.popup);

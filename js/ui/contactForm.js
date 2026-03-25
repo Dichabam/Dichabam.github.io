@@ -343,8 +343,21 @@ function validateForm() {
   return fields.map((id) => validateField(id)).every(Boolean);
 }
 
-function simulateSend() {
+async function simulateSend() {
   // Replace this with your actual email service integration
   // e.g., fetch("https://formspree.io/f/YOUR_ID", { method: "POST", ... })
+
+  const data = new FormData(form);
+
+   
+      const res = await fetch("https://formspree.io/f/xkopwzyv", {
+        method: "POST",
+        body: data,
+        headers: {
+          Accept: "application/json",
+        },
+      });
+
+      if (!res.ok) throw new Error();
   return new Promise((resolve) => setTimeout(resolve, 1400));
 }

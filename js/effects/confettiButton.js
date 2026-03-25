@@ -89,7 +89,7 @@ export class ConfettiButton {
   shootConfetti(btn, iconClass) {
     if (!window.gsap) return;
 
-    const particleCount = 50;
+    const particleCount = 20;
 
     for (let i = 0; i < particleCount; i++) {
       const p = document.createElement("i");
