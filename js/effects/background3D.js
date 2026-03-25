@@ -1,7 +1,6 @@
 import { state } from "../core/state.js";
 import { debounce } from "../core/utils.js";
 
-
 let scene, camera, renderer, controls;
 let particles, model;
 let animationId;
@@ -19,33 +18,28 @@ export function initBackground() {
   const hasExtras = THREE.GLTFLoader && THREE.OrbitControls;
   if (!hasExtras) {
     console.warn(
-      "GLTFLoader or OrbitControls missing. Model interaction limited."
+      "GLTFLoader or OrbitControls missing. Model interaction limited.",
     );
   }
 
- 
   injectPointerEventsCSS();
-
 
   scene = new THREE.Scene();
   scene.fog = new THREE.FogExp2(0x000000, 0.008);
 
- 
   camera = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
     1,
-    3000
+    3000,
   );
   camera.position.z = 500;
 
-  
   renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.outputEncoding = THREE.sRGBEncoding;
 
-  
   renderer.domElement.style.position = "fixed";
   renderer.domElement.style.top = "0";
   renderer.domElement.style.left = "0";
@@ -58,7 +52,6 @@ export function initBackground() {
   const dirLight = new THREE.DirectionalLight(0xffffff, 2);
   dirLight.position.set(200, 500, 300);
   scene.add(dirLight);
-
 
   createParticles();
   if (hasExtras) {
@@ -97,36 +90,21 @@ function injectPointerEventsCSS() {
   const style = document.createElement("style");
   style.id = styleId;
   style.textContent = `
-        /* Make layout transparent to clicks so they hit body/canvas */
-        main, section, header, footer, .nav-wrapper, .hero-content {
-            pointer-events: none !important;
-        }
-        /* Re-enable clicks for interactive elements inside those sections */
-        a, button, input, textarea, select, 
-        .card, .project-card, .hover-trigger, 
-        .pill-link, .game-window, .modal-content, 
-        .settings-btn, .cv-container, .glass-surface, .settings-wrapper {
-            pointer-events: auto !important;
-        }
-        /* Settings button specific fix */
-        #settings-btn {
-            pointer-events: auto !important;
-            z-index: 1000;
-        }
-    `;
+    /* The Three.js canvas is at z-index: -1, so it sits naturally behind
+       all page content. No pointer-event overrides are needed — the browser
+       already routes clicks to whichever element is on top. */
+    #settings-btn {
+      pointer-events: auto;
+      z-index: 1000;
+    }
+  `;
   document.head.appendChild(style);
 }
 
 function setupControls() {
+  if (window.innerWidth < 768) return;
 
-  if (window.innerWidth < 768) {
- 
-    return;
-  }
-
- 
   controls = new THREE.OrbitControls(camera, document.body);
-
   controls.enableDamping = true;
   controls.dampingFactor = 0.05;
   controls.enableZoom = false;
@@ -152,9 +130,9 @@ function loadModel() {
       console.log("Model loaded.");
     },
     undefined,
-    (error) => console.error("Model error:", error)
+    (error) => console.error("Model error:", error),
   );
-} 
+}
 
 function createParticles() {
   const isMobile = window.innerWidth < 768;
@@ -210,18 +188,17 @@ function createParticles() {
     vertexShader: `
       uniform float uTime;
       uniform float uPixelRatio;
-      
+
       attribute vec3 aRandom;
       attribute float aSize;
       attribute vec3 color;
-      
+
       varying vec3 vColor;
       varying float vAlpha;
 
       void main() {
         vec3 pos = position;
-        
-        // Rotation
+
         float angle = uTime * 0.1 + (pos.z * 0.001);
         float s = sin(angle);
         float c = cos(angle);
@@ -230,14 +207,13 @@ function createParticles() {
         pos.x = x;
         pos.y = y;
 
-        // Pulse
         pos += normalize(pos) * sin(uTime * 0.5 + aRandom.x * 10.0) * 10.0;
 
         vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
         gl_Position = projectionMatrix * mvPosition;
-        
+
         gl_PointSize = (1200.0 * aSize * uPixelRatio) / -mvPosition.z;
-        
+
         float dist = length(mvPosition.xyz);
         vAlpha = 1.0 - smoothstep(1000.0, 2500.0, dist);
         vColor = color;
@@ -268,7 +244,7 @@ function onWindowResize() {
   if (particles && particles.material.uniforms.uPixelRatio) {
     particles.material.uniforms.uPixelRatio.value = Math.min(
       window.devicePixelRatio,
-      2
+      2,
     );
   }
 }

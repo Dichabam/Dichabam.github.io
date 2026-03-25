@@ -1,5 +1,4 @@
 import { state } from "../core/state.js";
-import { MatrixEffect } from "./matrixEffect.js";
 
 let canvas, ctx;
 let animationId;

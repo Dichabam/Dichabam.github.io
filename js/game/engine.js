@@ -136,10 +136,10 @@ export function openGame() {
   const win = overlay.querySelector(".game-window");
   if (win) win.focus();
 
-  if (!GameState.pixelBlastApp) {
-    GameState.pixelBlastApp = new PixelBlastEffect("pixel-blast-container");
-  }
-  document.getElementById("pixel-blast-container").style.display = "block";
+  //if (!GameState.pixelBlastApp) {
+   // GameState.pixelBlastApp = new PixelBlastEffect("pixel-blast-container");
+ // }
+  //document.getElementById("pixel-blast-container").style.display = "block";
 
   setTimeout(() => {
     resizeGame();

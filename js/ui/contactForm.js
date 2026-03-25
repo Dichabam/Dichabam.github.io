@@ -4,18 +4,31 @@ export function initContactForm() {
 }
 
 function injectStyles() {
+  if (document.getElementById("contact-form-styles")) return;
   const style = document.createElement("style");
+  style.id = "contact-form-styles";
   style.textContent = `
+    /* ── Pointer-events fix ─────────────────────────────────────────────────
+       background3D.js sets pointer-events:none on every <section>.
+       This override restores full interactivity for the contact form.       */
+    #contact .contact-form-wrapper,
+    #contact .contact-form-wrapper *,
+    #contact-form,
+    #contact-form * {
+      pointer-events: auto !important;
+    }
+
     .contact-form-wrapper {
       width: 100%;
       max-width: 520px;
-      margin: 0 auto 0;
+      margin: 0 auto;
+      text-align: left;
     }
 
     .contact-form {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 20px;
     }
 
     .cf-row {
@@ -29,6 +42,7 @@ function injectStyles() {
       flex-direction: column;
       gap: 6px;
       position: relative;
+      padding-bottom: 20px;
     }
 
     .cf-label {
@@ -47,18 +61,23 @@ function injectStyles() {
 
     .cf-input,
     .cf-textarea {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
       border-radius: 6px;
-      padding: 11px 14px;
+      padding: 12px 14px;
       color: #fff;
       font-family: 'Montserrat', sans-serif;
       font-size: 0.875rem;
       outline: none;
       transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
-      resize: none;
+      resize: vertical;
       width: 100%;
       box-sizing: border-box;
+      pointer-events: auto !important;
+      cursor: text !important;
+      -webkit-user-select: text !important;
+      user-select: text !important;
+      caret-color: var(--accent);
     }
 
     .cf-input:focus,
@@ -76,12 +95,12 @@ function injectStyles() {
 
     .cf-input::placeholder,
     .cf-textarea::placeholder {
-      color: rgba(255,255,255,0.18);
+      color: rgba(255,255,255,0.2);
     }
 
     .cf-textarea {
-      min-height: 110px;
-      max-height: 250px;
+      min-height: 120px;
+      max-height: 260px;
     }
 
     .cf-error-msg {
@@ -89,10 +108,10 @@ function injectStyles() {
       font-size: 0.68rem;
       color: var(--danger);
       position: absolute;
-      bottom: -18px;
+      bottom: 2px;
       left: 0;
       opacity: 0;
-      transform: translateY(-4px);
+      transform: translateY(-2px);
       transition: opacity 0.2s, transform 0.2s;
       pointer-events: none;
     }
@@ -128,6 +147,7 @@ function injectStyles() {
       gap: 10px;
       position: relative;
       overflow: hidden;
+      pointer-events: auto !important;
     }
 
     .cf-submit-btn:hover {
@@ -139,11 +159,18 @@ function injectStyles() {
 
     .cf-submit-btn:disabled {
       opacity: 0.5;
-      cursor: not-allowed;
+      pointer-events: none !important;
       transform: none;
     }
 
-    .cf-submit-btn.loading .cf-btn-text { opacity: 0; }
+    .cf-btn-text {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: opacity 0.2s;
+    }
+
+    .cf-submit-btn.loading .cf-btn-text  { opacity: 0; }
     .cf-submit-btn.loading .cf-btn-spinner { opacity: 1; }
 
     .cf-btn-spinner {
@@ -155,6 +182,7 @@ function injectStyles() {
       border-radius: 50%;
       animation: cfSpin 0.8s linear infinite;
       opacity: 0;
+      transition: opacity 0.2s;
     }
 
     @keyframes cfSpin {
@@ -163,12 +191,13 @@ function injectStyles() {
 
     .cf-status {
       font-family: 'Montserrat', sans-serif;
-      font-size: 0.8rem;
-      padding: 10px 14px;
+      font-size: 0.82rem;
+      padding: 11px 14px;
       border-radius: 6px;
       display: none;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      margin-top: -4px;
     }
 
     .cf-status.success {
@@ -178,7 +207,7 @@ function injectStyles() {
       color: #00ff88;
     }
 
-    .cf-status.error {
+    .cf-status.error-state {
       display: flex;
       background: rgba(255, 0, 85, 0.08);
       border: 1px solid rgba(255, 0, 85, 0.25);
@@ -189,7 +218,7 @@ function injectStyles() {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin: 10px 0 6px;
+      margin: 16px 0 8px;
     }
 
     .cf-divider-line {
@@ -200,7 +229,7 @@ function injectStyles() {
 
     .cf-divider-text {
       font-family: 'Montserrat', sans-serif;
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       color: rgba(255,255,255,0.2);
       letter-spacing: 1px;
       white-space: nowrap;
@@ -220,40 +249,79 @@ function injectFormIntoContactSection() {
   const container = contactSection.querySelector(".container");
   if (!container) return;
 
-  // Find the existing email button
+  // Prevent double-injection
+  if (document.getElementById("contact-form")) return;
+
   const emailBtn = container.querySelector('a[href^="mailto"]');
 
   const wrapper = document.createElement("div");
   wrapper.className = "contact-form-wrapper scroll-reveal";
   wrapper.innerHTML = `
-    <form id="contact-form" class="contact-form" novalidate>
+    <form id="contact-form" class="contact-form" novalidate autocomplete="on">
       <div class="cf-row">
         <div class="cf-field">
           <label class="cf-label" for="cf-name">Name</label>
-          <input class="cf-input" id="cf-name" name="name" type="text" placeholder="Your name" autocomplete="name" />
+          <input
+            class="cf-input"
+            id="cf-name"
+            name="name"
+            type="text"
+            placeholder="Your name"
+            autocomplete="name"
+            tabindex="0"
+          />
           <span class="cf-error-msg" id="cf-name-err">Please enter your name</span>
         </div>
         <div class="cf-field">
           <label class="cf-label" for="cf-email">Email</label>
-          <input class="cf-input" id="cf-email" name="email" type="email" placeholder="your@email.com" autocomplete="email" />
+          <input
+            class="cf-input"
+            id="cf-email"
+            name="email"
+            type="email"
+            placeholder="your@email.com"
+            autocomplete="email"
+            tabindex="0"
+          />
           <span class="cf-error-msg" id="cf-email-err">Please enter a valid email</span>
         </div>
       </div>
       <div class="cf-field">
         <label class="cf-label" for="cf-subject">Subject</label>
-        <input class="cf-input" id="cf-subject" name="subject" type="text" placeholder="What's this about?" />
+        <input
+          class="cf-input"
+          id="cf-subject"
+          name="subject"
+          type="text"
+          placeholder="What's this about?"
+          autocomplete="off"
+          tabindex="0"
+        />
         <span class="cf-error-msg" id="cf-subject-err">Please enter a subject</span>
       </div>
       <div class="cf-field">
         <label class="cf-label" for="cf-message">Message</label>
-        <textarea class="cf-textarea" id="cf-message" name="message" placeholder="Your message…"></textarea>
-        <span class="cf-error-msg" id="cf-message-err">Please enter a message</span>
+        <textarea
+          class="cf-textarea"
+          id="cf-message"
+          name="message"
+          placeholder="Your message…"
+          tabindex="0"
+        ></textarea>
+        <span class="cf-error-msg" id="cf-message-err">Please write a message</span>
       </div>
-      <div id="cf-status" class="cf-status"></div>
+      <div id="cf-status" class="cf-status" role="alert" aria-live="polite"></div>
       <div class="cf-submit-row">
-        <button type="submit" class="cf-submit-btn btn hover-trigger" id="cf-submit">
-          <span class="cf-btn-text"><i class="fas fa-paper-plane"></i> Send Message</span>
-          <div class="cf-btn-spinner"></div>
+        <button
+          type="submit"
+          class="cf-submit-btn btn hover-trigger"
+          id="cf-submit"
+          tabindex="0"
+        >
+          <span class="cf-btn-text">
+            <i class="fas fa-paper-plane"></i> Send Message
+          </span>
+          <div class="cf-btn-spinner" aria-hidden="true"></div>
         </button>
       </div>
     </form>
@@ -265,7 +333,6 @@ function injectFormIntoContactSection() {
     </div>
   `;
 
-  // Insert before the email button's parent or before emailBtn
   if (emailBtn) {
     container.insertBefore(wrapper, emailBtn);
   } else {
@@ -275,12 +342,16 @@ function injectFormIntoContactSection() {
   bindFormEvents();
 }
 
+// ── Formspree endpoint ───────────────────────────────────────────────────────
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/xkopwzyv";
+
 function bindFormEvents() {
   const form = document.getElementById("contact-form");
   if (!form) return;
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+
     if (!validateForm()) return;
 
     const btn = document.getElementById("cf-submit");
@@ -289,75 +360,93 @@ function bindFormEvents() {
     btn.classList.add("loading");
     btn.disabled = true;
     status.className = "cf-status";
+    status.textContent = "";
     status.style.display = "none";
 
-    // Simulate send (replace with actual fetch to your endpoint / Formspree / EmailJS)
-    await simulateSend();
+    // Pass the actual form element to the sender
+    const success = await sendToFormspree(form);
 
     btn.classList.remove("loading");
     btn.disabled = false;
 
-    // On success:
-    status.className = "cf-status success";
-    status.innerHTML = `<i class="fas fa-circle-check"></i> Message sent! I'll get back to you soon.`;
-    status.style.display = "flex";
-    form.reset();
-
-    // Auto-hide after 6s
-    setTimeout(() => {
-      status.style.display = "none";
-    }, 6000);
+    if (success) {
+      status.className = "cf-status success";
+      status.innerHTML = `<i class="fas fa-circle-check"></i> Message sent! I'll get back to you soon.`;
+      status.style.display = "flex";
+      form.reset();
+      clearAllErrors();
+      setTimeout(() => {
+        status.style.display = "none";
+      }, 7000);
+    } else {
+      status.className = "cf-status error-state";
+      status.innerHTML = `<i class="fas fa-triangle-exclamation"></i> Something went wrong — please try emailing me directly.`;
+      status.style.display = "flex";
+      setTimeout(() => {
+        status.style.display = "none";
+      }, 8000);
+    }
   });
 
-  // Real-time validation on blur
+  // Per-field validation on blur
   ["cf-name", "cf-email", "cf-subject", "cf-message"].forEach((id) => {
     const el = document.getElementById(id);
     if (el) el.addEventListener("blur", () => validateField(id));
   });
 }
 
+// ── Formspree fetch ──────────────────────────────────────────────────────────
+async function sendToFormspree(formElement) {
+  try {
+    const res = await fetch(FORMSPREE_ENDPOINT, {
+      method: "POST",
+      body: new FormData(formElement),
+      headers: {
+        // Required by Formspree to return JSON instead of a redirect
+        Accept: "application/json",
+      },
+    });
+
+    if (res.ok) return true;
+
+    const json = await res.json().catch(() => ({}));
+    console.error("Formspree rejected submission:", json);
+    return false;
+  } catch (err) {
+    console.error("Network error while submitting form:", err);
+    return false;
+  }
+}
+
+// ── Validation helpers ───────────────────────────────────────────────────────
 function validateField(id) {
   const el = document.getElementById(id);
-  if (!el) return true;
   const errEl = document.getElementById(id + "-err");
-  let valid = true;
+  if (!el) return true;
 
-  if (id === "cf-email") {
-    valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim());
-  } else {
-    valid = el.value.trim().length > 0;
-  }
+  const valid =
+    id === "cf-email"
+      ? /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim())
+      : el.value.trim().length > 0;
 
-  if (valid) {
-    el.classList.remove("error");
-    if (errEl) errEl.classList.remove("visible");
-  } else {
-    el.classList.add("error");
-    if (errEl) errEl.classList.add("visible");
-  }
+  el.classList.toggle("error", !valid);
+  if (errEl) errEl.classList.toggle("visible", !valid);
+
   return valid;
 }
 
 function validateForm() {
-  const fields = ["cf-name", "cf-email", "cf-subject", "cf-message"];
-  return fields.map((id) => validateField(id)).every(Boolean);
+  // Validate all fields; don't short-circuit so every error shows at once
+  return ["cf-name", "cf-email", "cf-subject", "cf-message"]
+    .map(validateField)
+    .every(Boolean);
 }
 
-async function simulateSend() {
-  // Replace this with your actual email service integration
-  // e.g., fetch("https://formspree.io/f/YOUR_ID", { method: "POST", ... })
-
-  const data = new FormData(form);
-
-   
-      const res = await fetch("https://formspree.io/f/xkopwzyv", {
-        method: "POST",
-        body: data,
-        headers: {
-          Accept: "application/json",
-        },
-      });
-
-      if (!res.ok) throw new Error();
-  return new Promise((resolve) => setTimeout(resolve, 1400));
+function clearAllErrors() {
+  document
+    .querySelectorAll("#contact-form .cf-input, #contact-form .cf-textarea")
+    .forEach((el) => el.classList.remove("error"));
+  document
+    .querySelectorAll("#contact-form .cf-error-msg")
+    .forEach((el) => el.classList.remove("visible"));
 }
