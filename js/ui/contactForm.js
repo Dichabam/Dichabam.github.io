@@ -343,7 +343,7 @@ function injectFormIntoContactSection() {
 }
 
 // ── Formspree endpoint ───────────────────────────────────────────────────────
-const FORMSPREE_ENDPOINT = "https://formspree.io/f/xkopwzyv";
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/xykvwbzl";
 
 function bindFormEvents() {
   const form = document.getElementById("contact-form");
