@@ -1,3 +1,4 @@
+import { updateHoverTriggers } from "./cursor.js";
 export function initContactForm() {
   injectStyles();
   injectFormIntoContactSection();
@@ -339,6 +340,20 @@ function injectFormIntoContactSection() {
     container.appendChild(wrapper);
   }
 
+  // 1. Tell the cursor script that new buttons exist so they get the hover effect
+  updateHoverTriggers();
+
+  // 2. Protect only the inputs from the 3D background (do NOT block mousemove)
+  const inputs = wrapper.querySelectorAll(".cf-input, .cf-textarea");
+  const stopDrag = (e) => e.stopPropagation();
+
+  inputs.forEach((input) => {
+    // Only stop events that trigger a 3D rotation click/drag
+    ["mousedown", "touchstart", "pointerdown"].forEach((evt) => {
+      input.addEventListener(evt, stopDrag);
+    });
+  });
+
   bindFormEvents();
 }
 
@@ -351,20 +366,7 @@ function bindFormEvents() {
 
   // Stop input clicks/drags from bubbling up to document.body,
   // preventing OrbitControls from stealing focus and breaking text selection.
-  const stopPropagation = (e) => e.stopPropagation();
-  [
-    "mousedown",
-    "mousemove",
-    "mouseup",
-    "touchstart",
-    "touchmove",
-    "touchend",
-    "pointerdown",
-    "pointermove",
-    "pointerup",
-  ].forEach((evt) => {
-    form.addEventListener(evt, stopPropagation);
-  });
+ 
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
