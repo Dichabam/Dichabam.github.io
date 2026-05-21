@@ -238,6 +238,20 @@ export class CommandPalette {
     this.input = this.overlay.querySelector("#cmd-input");
     this.list = this.overlay.querySelector("#cmd-results");
 
+    const stopPropagation = (e) => e.stopPropagation();
+    [
+      "mousedown",
+      "mousemove",
+      "mouseup",
+      "touchstart",
+      "touchmove",
+      "touchend",
+      "pointerdown",
+      "pointermove",
+      "pointerup",
+    ].forEach((evt) => {
+      this.input.addEventListener(evt, stopPropagation);
+    });
     this.overlay.addEventListener("click", (e) => {
       if (e.target === this.overlay) this.close();
     });

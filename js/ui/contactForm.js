@@ -349,6 +349,23 @@ function bindFormEvents() {
   const form = document.getElementById("contact-form");
   if (!form) return;
 
+  // Stop input clicks/drags from bubbling up to document.body,
+  // preventing OrbitControls from stealing focus and breaking text selection.
+  const stopPropagation = (e) => e.stopPropagation();
+  [
+    "mousedown",
+    "mousemove",
+    "mouseup",
+    "touchstart",
+    "touchmove",
+    "touchend",
+    "pointerdown",
+    "pointermove",
+    "pointerup",
+  ].forEach((evt) => {
+    form.addEventListener(evt, stopPropagation);
+  });
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
