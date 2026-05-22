@@ -14,4 +14,14 @@ export const internalProjectData = [
     github: "https://github.com/Dichabam/Phumla-Kamnandi-GRP-12.git",
     preview: null,
   },
+  {
+    type: "project",
+    title: "Interpretable Credit Model",
+    description: 
+      "This is an interpretable credit risk modelling pipeline and interactive Business Decision Dashboard. Built to satisfy strict regulatory constraints, the decision engine relies exclusively on Logistic Regression, enhanced through careful Weight of Evidence (WoE) feature engineering and Points-to-Double-Odds (PDO) scorecard generation.",
+    icon: "./assets/images/fnb.jpeg",
+    github: "https://github.com/Dichabam/DataQuest.git",
+    preview: "https://fnbdataquest2026dm.streamlit.app/",
+
+  },
 ];
