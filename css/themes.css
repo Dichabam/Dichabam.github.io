@@ -1,0 +1,131 @@
+/* =========================================
+   ERA 1: 1998 (Retro Web / Terminal)
+   ========================================= */
+html[data-theme="1998"],
+html[data-theme="1998"] body {
+    background: #000000 !important;
+    color: #00ff00 !important;
+    font-family: "Courier New", Courier, monospace !important;
+}
+
+html[data-theme="1998"] * {
+    transition: none !important; /* Disable modern smooth animations */
+}
+
+/* Hide modern 3D canvas backgrounds */
+html[data-theme="1998"] canvas#bg-canvas,
+html[data-theme="1998"] canvas {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+/* Convert glass panels and cards to blocky terminal boxes */
+html[data-theme="1998"] .glass-panel,
+html[data-theme="1998"] .card,
+html[data-theme="1998"] nav,
+html[data-theme="1998"] .modal-content,
+html[data-theme="1998"] section {
+    background: #000000 !important;
+    border: 2px solid #00ff00 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    color: #00ff00 !important;
+    border-radius: 0 !important;
+}
+
+html[data-theme="1998"] h1, 
+html[data-theme="1998"] h2, 
+html[data-theme="1998"] h3, 
+html[data-theme="1998"] p, 
+html[data-theme="1998"] a {
+    color: #00ff00 !important;
+    text-shadow: none !important;
+    font-family: "Courier New", Courier, monospace !important;
+}
+
+/* Make buttons blocky */
+html[data-theme="1998"] button,
+html[data-theme="1998"] .btn-primary {
+    background: transparent !important;
+    border: 2px solid #00ff00 !important;
+    border-radius: 0 !important;
+    text-transform: uppercase !important;
+    color: #00ff00 !important;
+}
+
+html[data-theme="1998"] button:hover {
+    background: #00ff00 !important;
+    color: #000 !important;
+}
+
+
+/* =========================================
+   ERA 2: 2010 (Clean Web 2.0 / Corporate)
+   ========================================= */
+html[data-theme="2010"],
+html[data-theme="2010"] body {
+    background: #e9eaed !important; /* Classic light grey */
+    color: #333333 !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+}
+
+/* Hide 3D backgrounds */
+html[data-theme="2010"] canvas#bg-canvas,
+html[data-theme="2010"] canvas {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+/* Convert glass panels to standard white boxes with soft shadows */
+html[data-theme="2010"] .glass-panel,
+html[data-theme="2010"] .card,
+html[data-theme="2010"] nav,
+html[data-theme="2010"] .modal-content,
+html[data-theme="2010"] section {
+    background: #ffffff !important;
+    border: 1px solid #cccccc !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    color: #333333 !important;
+    border-radius: 4px !important;
+}
+
+html[data-theme="2010"] h1, 
+html[data-theme="2010"] h2, 
+html[data-theme="2010"] h3 {
+    color: #3b5998 !important; /* Web 2.0 Blue */
+    text-shadow: none !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+}
+
+html[data-theme="2010"] a,
+html[data-theme="2010"] button,
+html[data-theme="2010"] .btn-primary {
+    background: #f8f8f8 !important;
+    color: #333 !important;
+    border: 1px solid #ccc !important;
+    border-radius: 3px !important;
+    box-shadow: inset 0 1px 0 #fff, 0 1px 2px rgba(0,0,0,0.05) !important;
+    text-transform: none !important;
+    text-shadow: 0 1px 0 #fff !important;
+}
+
+html[data-theme="2010"] button:hover {
+    background: #e0e0e0 !important;
+}
+
+/* =========================================
+   PROTECT THE TIME MACHINE WIDGET
+   ========================================= */
+/* Keeps the Time Machine slider visible and usable across themes */
+html[data-theme] #time-machine-container,
+html[data-theme] #time-machine-container * {
+    font-family: monospace !important;
+    color: #fff !important;
+}
+html[data-theme="1998"] #time-machine-container { background: rgba(10, 10, 15, 0.9) !important; border-color: #0f0 !important; }
+html[data-theme="2010"] #time-machine-container { background: rgba(10, 10, 15, 0.9) !important; border-color: #0ff !important; }

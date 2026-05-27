@@ -24,13 +24,16 @@ import { ConfettiButton } from "./effects/confettiButton.js";
 import { DecryptedText } from "./effects/decryptedText.js";
 import { VariableProximity } from "./effects/variableProximity.js";
 
-// ── New features ─────────────────────────────────────────────────────────────
-import { AmbientAudio } from "./effects/ambientAudio.js";
+// ── New features ─────────────────────────────────────────────────────────────  
 import { ScrollProgress } from "./ui/scrollProgress.js";
 import { CommandPalette } from "./ui/commandPalette.js";
 import { SkillTooltips } from "./ui/skillTooltips.js";
 import { initContactForm } from "./ui/contactForm.js";
 import { CursorTrail } from "./effects/cursorTrail.js";
+//import { initScrollProgress } from "./ui/scrollProgress.js";
+// (Importing the new modules)
+import { TimeMachine } from "./ui/timeMachine.js";
+import { Biometrics } from "./effects/biometrics.js";
 
 // Expose globals needed by inline HTML onclick attributes
 window.openProjectModal = openProjectModal;
@@ -187,10 +190,18 @@ document.addEventListener("DOMContentLoaded", () => {
     // ── New features ────────────────────────────────────────────────────────
     new ScrollProgress();
     new CursorTrail();
-    new AmbientAudio();
     new CommandPalette();
     new SkillTooltips();
     initContactForm();
+    // Init your existing UI components
+    initScrollProgress();
+
+    // Initialize New Features
+    new TimeMachine();
+    const userBiometrics = new Biometrics();
+
+    // (Optional) Make biometrics globally available so your 3D scripts can read it if needed
+    window.userBiometrics = userBiometrics;
   } catch (err) {
     console.error("Initialization Error:", err);
   }

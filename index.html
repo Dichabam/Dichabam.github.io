@@ -29,6 +29,9 @@
     <link rel="stylesheet" href="css/components/loader.css">
     <link rel="stylesheet" href="css/effects.css">
     <link rel="stylesheet" href="css/features.css">
+        <!-- Add the new Time Machine and Theme styles -->
+    <link rel="stylesheet" href="css/components/timeMachine.css">
+    <link rel="stylesheet" href="css/themes.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
@@ -378,5 +381,16 @@
             </p>
         </div>
     </footer>
+    <div id="time-machine-container">
+        <div class="time-labels">
+            <span>1998</span>
+            <span id="current-era-label">2024</span>
+            <span>2024</span>
+        </div>
+        <input type="range" id="time-slider" min="1" max="3" value="3" step="1" aria-label="Time machine era slider" title="Time machine era slider">
+        <div class="time-title">TIME MACHINE</div>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>
