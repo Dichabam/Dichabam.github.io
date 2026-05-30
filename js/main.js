@@ -194,7 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
     new SkillTooltips();
     initContactForm();
     // Init your existing UI components
-    initScrollProgress();
+    //initScrollProgress();
 
     // Initialize New Features
     new TimeMachine();

@@ -6,6 +6,16 @@ let particles, model;
 let animationId;
 let isPaused = false;
 
+// ── Biometric state ────────────────────────────────────────────────────────
+let _moodTargetH = 186; // hue of #03b3c3
+let _moodTargetS = 97;
+let _moodTargetL = 39;
+let _moodCurrentH = 186;
+let _moodCurrentS = 97;
+let _moodCurrentL = 39;
+let _speedMult = 1.0;
+let _targetSpeed = 1.0;
+
 export function initBackground() {
   const container = document.getElementById("lights");
   if (!container) return;
@@ -16,11 +26,6 @@ export function initBackground() {
   }
 
   const hasExtras = THREE.GLTFLoader && THREE.OrbitControls;
-  if (!hasExtras) {
-    console.warn(
-      "GLTFLoader or OrbitControls missing. Model interaction limited.",
-    );
-  }
 
   injectPointerEventsCSS();
 
@@ -72,12 +77,30 @@ export function initBackground() {
   window.addEventListener("theme-change", (e) => {
     const theme = e.detail;
     if (theme === "default" || !theme) {
-      gsap.to(container, { opacity: 1, duration: 0.5 });
+      if (typeof gsap !== "undefined") {
+        gsap.to(container, { opacity: 1, duration: 0.5 });
+      } else {
+        container.style.opacity = "1";
+      }
       isPaused = false;
     } else {
-      gsap.to(container, { opacity: 0, duration: 0.5 });
+      if (typeof gsap !== "undefined") {
+        gsap.to(container, { opacity: 0, duration: 0.5 });
+      } else {
+        container.style.opacity = "0";
+      }
       isPaused = true;
     }
+  });
+
+  // ── Wire up biometric updates ──────────────────────────────────────────
+  window.addEventListener("biometricUpdate", (e) => {
+    const { h, s, l, mood } = e.detail;
+    _moodTargetH = h;
+    _moodTargetS = s;
+    _moodTargetL = l;
+    // speed: calm = 0.4×, frantic = 2.8×
+    _targetSpeed = 0.4 + mood * 2.4;
   });
 
   animate();
@@ -86,13 +109,9 @@ export function initBackground() {
 function injectPointerEventsCSS() {
   const styleId = "interactive-bg-style";
   if (document.getElementById(styleId)) return;
-
   const style = document.createElement("style");
   style.id = styleId;
   style.textContent = `
-    /* The Three.js canvas is at z-index: -1, so it sits naturally behind
-       all page content. No pointer-event overrides are needed — the browser
-       already routes clicks to whichever element is on top. */
     #settings-btn {
       pointer-events: auto;
       z-index: 1000;
@@ -103,7 +122,6 @@ function injectPointerEventsCSS() {
 
 function setupControls() {
   if (window.innerWidth < 768) return;
-
   controls = new THREE.OrbitControls(camera, document.body);
   controls.enableDamping = true;
   controls.dampingFactor = 0.05;
@@ -119,15 +137,11 @@ function loadModel() {
     "./assets/models/Un.glb",
     (gltf) => {
       model = gltf.scene;
-
       const box = new THREE.Box3().setFromObject(model);
       const center = box.getCenter(new THREE.Vector3());
       model.position.sub(center);
-
       model.scale.setScalar(105);
-
       scene.add(model);
-      console.log("Model loaded.");
     },
     undefined,
     (error) => console.error("Model error:", error),
@@ -149,7 +163,6 @@ function createParticles() {
 
   for (let i = 0; i < particleCount; i++) {
     const i3 = i * 3;
-
     const radius = Math.random() * 500 + 10;
     const angle = i * 0.1 + Math.random() * Math.PI * 2;
     const depth = (Math.random() - 0.5) * 1500;
@@ -166,7 +179,6 @@ function createParticles() {
 
     const mixedColor = colorInside.clone();
     mixedColor.lerp(colorOutside, radius / 1500);
-
     colors[i3] = mixedColor.r;
     colors[i3 + 1] = mixedColor.g;
     colors[i3 + 2] = mixedColor.b;
@@ -184,10 +196,13 @@ function createParticles() {
     uniforms: {
       uTime: { value: 0 },
       uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
+      uMoodColor: { value: new THREE.Color("#03b3c3") }, // ← biometric colour
+      uSpeedMult: { value: 1.0 }, // ← biometric speed
     },
     vertexShader: `
       uniform float uTime;
       uniform float uPixelRatio;
+      uniform float uSpeedMult;
 
       attribute vec3 aRandom;
       attribute float aSize;
@@ -199,7 +214,8 @@ function createParticles() {
       void main() {
         vec3 pos = position;
 
-        float angle = uTime * 0.1 + (pos.z * 0.001);
+        float t = uTime * 0.1 * uSpeedMult;
+        float angle = t + (pos.z * 0.001);
         float s = sin(angle);
         float c = cos(angle);
         float x = pos.x * c - pos.y * s;
@@ -207,7 +223,7 @@ function createParticles() {
         pos.x = x;
         pos.y = y;
 
-        pos += normalize(pos) * sin(uTime * 0.5 + aRandom.x * 10.0) * 10.0;
+        pos += normalize(pos) * sin(uTime * 0.5 * uSpeedMult + aRandom.x * 10.0) * 10.0;
 
         vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
         gl_Position = projectionMatrix * mvPosition;
@@ -220,14 +236,20 @@ function createParticles() {
       }
     `,
     fragmentShader: `
+      uniform vec3 uMoodColor;
       varying vec3 vColor;
       varying float vAlpha;
+
       void main() {
         float d = distance(gl_PointCoord, vec2(0.5));
         if (d > 0.5) discard;
         float glow = 1.0 - (d * 2.0);
         glow = pow(glow, 2.0);
-        gl_FragColor = vec4(vColor, vAlpha * glow);
+
+        // Blend base particle colour toward the mood colour
+        vec3 finalColor = mix(vColor, uMoodColor, 0.45);
+
+        gl_FragColor = vec4(finalColor, vAlpha * glow);
       }
     `,
   });
@@ -257,13 +279,25 @@ function animate() {
   const time = performance.now() * 0.0005;
 
   if (particles) {
+    // ── Smoothly lerp the biometric colour into the shader uniform ─────────
+    _moodCurrentH += (_moodTargetH - _moodCurrentH) * 0.02;
+    _moodCurrentS += (_moodTargetS - _moodCurrentS) * 0.02;
+    _moodCurrentL += (_moodTargetL - _moodCurrentL) * 0.02;
+    _speedMult += (_targetSpeed - _speedMult) * 0.025;
+
+    // Convert HSL to THREE.Color (THREE accepts CSS strings)
+    const moodCSS = `hsl(${_moodCurrentH.toFixed(0)}, ${_moodCurrentS.toFixed(0)}%, ${_moodCurrentL.toFixed(0)}%)`;
+    particles.material.uniforms.uMoodColor.value.setStyle(moodCSS);
+    particles.material.uniforms.uSpeedMult.value = _speedMult;
     particles.material.uniforms.uTime.value = time;
   }
 
   if (controls) {
+    // Also speed up orbit rotation with mood
+    controls.autoRotateSpeed = 0.5 * _speedMult;
     controls.update();
   } else if (model) {
-    model.rotation.y += 0.002;
+    model.rotation.y += 0.002 * _speedMult;
   }
 
   renderer.render(scene, camera);
