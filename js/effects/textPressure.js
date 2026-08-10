@@ -27,17 +27,16 @@ export class TextPressure {
       span.className = "text-pressure-span";
       span.textContent = char;
 
-  
-      span.dataset.targetWdth = "5";
+      span.dataset.targetWdth = "25";
       span.dataset.targetWght = "100";
-      span.dataset.currentWdth = "5";
+      span.dataset.currentWdth = "25";
       span.dataset.currentWght = "100";
 
-      span.style.fontVariationSettings = "'wght' 100, 'wdth' 5";
+      span.style.fontVariationSettings = "'wght' 100, 'wdth' 25";
 
       if (char === " ") {
         span.style.minWidth = "20px";
-        span.style.display = "inline-block"; 
+        span.style.display = "inline-block";
       }
 
       h2.appendChild(span);
@@ -76,7 +75,7 @@ export class TextPressure {
           this.cursor.y = e.touches[0].clientY;
         }
       },
-      { passive: true }
+      { passive: true },
     );
 
     this.container.addEventListener("touchend", () => {
@@ -91,7 +90,7 @@ export class TextPressure {
           this.cursor.y = e.touches[0].clientY;
         }
       },
-      { passive: true }
+      { passive: true },
     );
   }
 
@@ -102,12 +101,10 @@ export class TextPressure {
   }
 
   getAttr(distance, maxDist, minVal, maxVal) {
- 
     if (distance > maxDist) return minVal;
 
     const factor = 1 - distance / maxDist;
 
- 
     const val = minVal + factor * (maxVal - minVal);
     return val;
   }
@@ -121,13 +118,13 @@ export class TextPressure {
       let allReset = true;
       this.spans.forEach((span) => {
         const currentWdth = parseFloat(span.dataset.currentWdth);
-        if (Math.abs(currentWdth - 5) > 0.5) allReset = false;
+        if (Math.abs(currentWdth - 25) > 0.5) allReset = false;
       });
       if (allReset) {
         this.isActive = false;
-     
+
         this.spans.forEach((span) => {
-          span.style.fontVariationSettings = "'wght' 100, 'wdth' 5";
+          span.style.fontVariationSettings = "'wght' 100, 'wdth' 25";
         });
         return;
       }
@@ -135,15 +132,15 @@ export class TextPressure {
 
     if (!state.effectsEnabled && !this.isActive) return;
 
-    this.mouse.x += (this.cursor.x - this.mouse.x) / 10; 
+    this.mouse.x += (this.cursor.x - this.mouse.x) / 10;
     this.mouse.y += (this.cursor.y - this.mouse.y) / 10;
 
     const rect = this.container.getBoundingClientRect();
- 
+
     const maxDist = rect.width / 1.2;
 
     this.spans.forEach((span) => {
-      let targetWdth = 5;
+      let targetWdth = 25;
       let targetWght = 100;
 
       if (this.isHovering) {
@@ -155,8 +152,8 @@ export class TextPressure {
 
         const d = this.dist(this.mouse, charCenter);
 
-        targetWdth = this.getAttr(d, maxDist, 5, 200);
-        targetWght = this.getAttr(d, maxDist, 100, 900);
+        targetWdth = this.getAttr(d, maxDist, 25, 151);
+        targetWght = this.getAttr(d, maxDist, 100, 1000);
       }
 
       let currentWdth = parseFloat(span.dataset.currentWdth);
@@ -169,7 +166,7 @@ export class TextPressure {
       span.dataset.currentWght = currentWght;
 
       span.style.fontVariationSettings = `'wght' ${Math.floor(
-        currentWght
+        currentWght,
       )}, 'wdth' ${Math.floor(currentWdth)}`;
     });
 

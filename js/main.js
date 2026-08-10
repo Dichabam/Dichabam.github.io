@@ -19,12 +19,11 @@ import { WireframeMode } from "./effects/wireframe.js";
 import { NeuralSwarm } from "./effects/neuralSwarm.js";
 import { ScrollTransitions } from "./effects/scrollTransitions.js";
 import { Loader } from "./ui/loader.js";
-import { TouchRipple } from "./effects/touchRipple.js";
 import { ConfettiButton } from "./effects/confettiButton.js";
 import { DecryptedText } from "./effects/decryptedText.js";
 import { VariableProximity } from "./effects/variableProximity.js";
 
-// ── New features ─────────────────────────────────────────────────────────────  
+// ── New features ─────────────────────────────────────────────────────────────
 import { ScrollProgress } from "./ui/scrollProgress.js";
 import { CommandPalette } from "./ui/commandPalette.js";
 import { SkillTooltips } from "./ui/skillTooltips.js";
@@ -32,7 +31,6 @@ import { initContactForm } from "./ui/contactForm.js";
 import { CursorTrail } from "./effects/cursorTrail.js";
 //import { initScrollProgress } from "./ui/scrollProgress.js";
 // (Importing the new modules)
-import { TimeMachine } from "./ui/timeMachine.js";
 import { Biometrics } from "./effects/biometrics.js";
 
 // Expose globals needed by inline HTML onclick attributes
@@ -140,7 +138,6 @@ document.addEventListener("DOMContentLoaded", () => {
     new Flashlight();
     new WireframeMode();
     new NeuralSwarm();
-    new TouchRipple();
     new ConfettiButton();
 
     // Deferred slightly so DOM is fully painted
@@ -197,7 +194,6 @@ document.addEventListener("DOMContentLoaded", () => {
     //initScrollProgress();
 
     // Initialize New Features
-    new TimeMachine();
     const userBiometrics = new Biometrics();
 
     // (Optional) Make biometrics globally available so your 3D scripts can read it if needed
