@@ -27,16 +27,17 @@ export class TextPressure {
       span.className = "text-pressure-span";
       span.textContent = char;
 
+  
       span.dataset.targetWdth = "25";
       span.dataset.targetWght = "100";
       span.dataset.currentWdth = "25";
       span.dataset.currentWght = "100";
 
-      span.style.fontVariationSettings = "'wght' 100, 'wdth' 25";
+      span.style.fontVariationSettings = "'wght' 400, 'wdth' 25";
 
       if (char === " ") {
         span.style.minWidth = "20px";
-        span.style.display = "inline-block";
+        span.style.display = "inline-block"; 
       }
 
       h2.appendChild(span);
@@ -75,7 +76,7 @@ export class TextPressure {
           this.cursor.y = e.touches[0].clientY;
         }
       },
-      { passive: true },
+      { passive: true }
     );
 
     this.container.addEventListener("touchend", () => {
@@ -90,7 +91,7 @@ export class TextPressure {
           this.cursor.y = e.touches[0].clientY;
         }
       },
-      { passive: true },
+      { passive: true }
     );
   }
 
@@ -101,10 +102,12 @@ export class TextPressure {
   }
 
   getAttr(distance, maxDist, minVal, maxVal) {
+ 
     if (distance > maxDist) return minVal;
 
     const factor = 1 - distance / maxDist;
 
+ 
     const val = minVal + factor * (maxVal - minVal);
     return val;
   }
@@ -122,9 +125,9 @@ export class TextPressure {
       });
       if (allReset) {
         this.isActive = false;
-
+     
         this.spans.forEach((span) => {
-          span.style.fontVariationSettings = "'wght' 100, 'wdth' 25";
+          span.style.fontVariationSettings = "'wght' 400, 'wdth' 25";
         });
         return;
       }
@@ -132,11 +135,11 @@ export class TextPressure {
 
     if (!state.effectsEnabled && !this.isActive) return;
 
-    this.mouse.x += (this.cursor.x - this.mouse.x) / 10;
+    this.mouse.x += (this.cursor.x - this.mouse.x) / 10; 
     this.mouse.y += (this.cursor.y - this.mouse.y) / 10;
 
     const rect = this.container.getBoundingClientRect();
-
+ 
     const maxDist = rect.width / 1.2;
 
     this.spans.forEach((span) => {
@@ -166,7 +169,7 @@ export class TextPressure {
       span.dataset.currentWght = currentWght;
 
       span.style.fontVariationSettings = `'wght' ${Math.floor(
-        currentWght,
+        currentWght
       )}, 'wdth' ${Math.floor(currentWdth)}`;
     });
 

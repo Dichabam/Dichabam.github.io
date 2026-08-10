@@ -14,7 +14,7 @@ import { optimizeWillChange } from "./core/utils.js";
 import { initGame } from "./game/engine.js";
 import { initProfileCard } from "./ui/profileCard.js";
 import { initMagneticButtons } from "./ui/magnetic.js";
-import { Flashlight } from "./effects/flashlight.js";
+//import { Flashlight } from "./effects/flashlight.js";
 import { WireframeMode } from "./effects/wireframe.js";
 import { NeuralSwarm } from "./effects/neuralSwarm.js";
 import { ScrollTransitions } from "./effects/scrollTransitions.js";
@@ -31,7 +31,7 @@ import { initContactForm } from "./ui/contactForm.js";
 import { CursorTrail } from "./effects/cursorTrail.js";
 //import { initScrollProgress } from "./ui/scrollProgress.js";
 // (Importing the new modules)
-import { Biometrics } from "./effects/biometrics.js";
+//import { Biometrics } from "./effects/biometrics.js";
 
 // Expose globals needed by inline HTML onclick attributes
 window.openProjectModal = openProjectModal;
@@ -135,9 +135,9 @@ document.addEventListener("DOMContentLoaded", () => {
     initMagneticButtons();
 
     // Easter-egg / advanced effects
-    new Flashlight();
+    //new Flashlight();
     new WireframeMode();
-    new NeuralSwarm();
+    //new NeuralSwarm();
     new ConfettiButton();
 
     // Deferred slightly so DOM is fully painted
@@ -186,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ── New features ────────────────────────────────────────────────────────
     new ScrollProgress();
-    new CursorTrail();
+    //new CursorTrail();
     new CommandPalette();
     new SkillTooltips();
     initContactForm();
@@ -194,7 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //initScrollProgress();
 
     // Initialize New Features
-    const userBiometrics = new Biometrics();
+    //const userBiometrics = new Biometrics();
 
     // (Optional) Make biometrics globally available so your 3D scripts can read it if needed
     window.userBiometrics = userBiometrics;
