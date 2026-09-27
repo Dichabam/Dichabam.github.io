@@ -1,4 +1,5 @@
 import { updateHoverTriggers } from "./cursor.js";
+import { toggleCV } from "./cv.js";
 
 const COMMANDS = [
   { id: "home",     label: "Go to Home",    icon: "fa-house",        section: "#hero",    category: "Navigate" },
@@ -9,7 +10,6 @@ const COMMANDS = [
   { id: "github",   label: "Open GitHub",   icon: "fa-brands fa-github", url: "https://github.com/Dichabam", category: "Links" },
   { id: "linkedin", label: "Open LinkedIn", icon: "fa-brands fa-linkedin", url: "https://www.linkedin.com/in/dichaba-mofokeng-913788327", category: "Links" },
   { id: "effects",  label: "Toggle/Disable Effects","icon": "fa-wand-magic-sparkles", action: "toggleEffects", category: "Actions" },
-  { id: "audio",    label: "Toggle Audio",  icon: "fa-volume-low",   action: "toggleAudio", category: "Actions" },
 ];
 
 export class CommandPalette {
@@ -372,16 +372,11 @@ export class CommandPalette {
       return;
     }
     if (cmd.action === "toggleCV") {
-      if (typeof window.toggleCV === "function") window.toggleCV();
+      toggleCV();
       return;
     }
     if (cmd.action === "toggleEffects") {
       const btn = document.getElementById("settings-btn");
-      if (btn) btn.click();
-      return;
-    }
-    if (cmd.action === "toggleAudio") {
-      const btn = document.getElementById("audio-toggle-btn");
       if (btn) btn.click();
       return;
     }

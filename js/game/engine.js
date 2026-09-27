@@ -166,8 +166,9 @@ export function initGame() {
   GameState.canvas = document.getElementById("gameCanvas");
   GameState.ctx = GameState.canvas.getContext("2d", { alpha: false });
 
-  let highScore = localStorage.getItem("quantRunHighScore") || 0;
-  document.getElementById("highScoreVal").innerText = `+${highScore}%`;
+  // Seed from storage so a new session doesn't overwrite a better stored score
+  GameState.highScore = Number(localStorage.getItem("quantRunHighScore")) || 0;
+  document.getElementById("highScoreVal").innerText = `+${GameState.highScore}%`;
 
   window.addEventListener("resize", resizeGame);
 

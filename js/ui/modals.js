@@ -29,14 +29,14 @@ export function openProjectModal(item) {
 
   if (item.github) {
     links.innerHTML += `
-            <a href="${item.github}" target="_blank" class="btn btn-outline hover-trigger">
+            <a href="${item.github}" target="_blank" rel="noopener noreferrer" class="btn btn-outline hover-trigger">
                 <i class="fab fa-github"></i> GitHub
             </a>
         `;
   }
   if (item.preview) {
     links.innerHTML += `
-            <a href="${item.preview}" target="_blank" class="btn btn-primary hover-trigger">
+            <a href="${item.preview}" target="_blank" rel="noopener noreferrer" class="btn btn-primary hover-trigger">
                 <i class="fas fa-external-link-alt"></i> View 
             </a>
         `;

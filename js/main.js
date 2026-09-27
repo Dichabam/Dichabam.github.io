@@ -1,11 +1,7 @@
 import { initCursor, updateHoverTriggers } from "./ui/cursor.js";
 import { initNav } from "./ui/nav.js";
-import {
-  initModals,
-  openProjectModal,
-  closeProjectModal,
-} from "./ui/modals.js";
-import { initCV, toggleCV } from "./ui/cv.js";
+import { initModals, openProjectModal } from "./ui/modals.js";
+import { initCV } from "./ui/cv.js";
 import { initSettings } from "./ui/settings.js";
 import { initBackground } from "./effects/background3D.js";
 import { TextPressure } from "./effects/textPressure.js";
@@ -14,29 +10,16 @@ import { optimizeWillChange } from "./core/utils.js";
 import { initGame } from "./game/engine.js";
 import { initProfileCard } from "./ui/profileCard.js";
 import { initMagneticButtons } from "./ui/magnetic.js";
-//import { Flashlight } from "./effects/flashlight.js";
 import { WireframeMode } from "./effects/wireframe.js";
-import { NeuralSwarm } from "./effects/neuralSwarm.js";
 import { ScrollTransitions } from "./effects/scrollTransitions.js";
 import { Loader } from "./ui/loader.js";
 import { ConfettiButton } from "./effects/confettiButton.js";
 import { DecryptedText } from "./effects/decryptedText.js";
 import { VariableProximity } from "./effects/variableProximity.js";
-
-// ── New features ─────────────────────────────────────────────────────────────
 import { ScrollProgress } from "./ui/scrollProgress.js";
 import { CommandPalette } from "./ui/commandPalette.js";
 import { SkillTooltips } from "./ui/skillTooltips.js";
 import { initContactForm } from "./ui/contactForm.js";
-import { CursorTrail } from "./effects/cursorTrail.js";
-//import { initScrollProgress } from "./ui/scrollProgress.js";
-// (Importing the new modules)
-//import { Biometrics } from "./effects/biometrics.js";
-
-// Expose globals needed by inline HTML onclick attributes
-window.openProjectModal = openProjectModal;
-window.closeProjectModal = closeProjectModal;
-window.toggleCV = toggleCV;
 
 // ── Smooth anchor scroll ──────────────────────────────────────────────────────
 function initSmoothAnchors() {
@@ -50,13 +33,6 @@ function initSmoothAnchors() {
       }
     });
   });
-}
-
-// ── Card click handler ────────────────────────────────────────────────────────
-function createCardClickHandler(item) {
-  return function () {
-    window.openProjectModal(item);
-  };
 }
 
 // ── Render a single project / research card ───────────────────────────────────
@@ -96,7 +72,7 @@ function renderCard(item, projContainer, resContainer) {
     resContainer.appendChild(card);
   }
 
-  card.addEventListener("click", createCardClickHandler(item));
+  card.addEventListener("click", () => openProjectModal(item));
 }
 
 // ── Load work section (projects + research) ───────────────────────────────────
@@ -135,9 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initMagneticButtons();
 
     // Easter-egg / advanced effects
-    //new Flashlight();
     new WireframeMode();
-    //new NeuralSwarm();
     new ConfettiButton();
 
     // Deferred slightly so DOM is fully painted
@@ -184,20 +158,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // Smooth anchor links
     initSmoothAnchors();
 
-    // ── New features ────────────────────────────────────────────────────────
     new ScrollProgress();
-    //new CursorTrail();
     new CommandPalette();
     new SkillTooltips();
     initContactForm();
-    // Init your existing UI components
-    //initScrollProgress();
-
-    // Initialize New Features
-    //const userBiometrics = new Biometrics();
-
-    // (Optional) Make biometrics globally available so your 3D scripts can read it if needed
-    window.userBiometrics = userBiometrics;
   } catch (err) {
     console.error("Initialization Error:", err);
   }

@@ -8,13 +8,6 @@ export function initCV() {
 
   if (heroBtn) heroBtn.addEventListener("click", toggleCV);
   if (closeBtn) closeBtn.addEventListener("click", toggleCV);
-
-  const navCvBtn = document.querySelector('button[onclick="toggleCV()"]');
-  if (navCvBtn)
-    navCvBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      toggleCV();
-    });
 }
 
 
