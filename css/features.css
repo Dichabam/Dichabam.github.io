@@ -42,27 +42,6 @@ body.game-active #status-ticker {
 .ticker-label { color: var(--accent); font-weight: 700; }
 .ticker-val { color: #fff; min-width: 40px; }
 
-#flashlight-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    z-index: 9998; 
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-    background: radial-gradient(
-        circle 150px at var(--x, 50%) var(--y, 50%),
-        transparent 0%,
-        rgba(0, 0, 0, 0.98) 100%
-    );
-}
-
-#flashlight-overlay.active { opacity: 1; }
-
-#neural-trigger {
-    transition: text-shadow 0.3s, color 0.3s;
-    cursor: pointer; 
-}
-
 .obscure-clue {
     font-size: 0.7em;
     color: #333; 

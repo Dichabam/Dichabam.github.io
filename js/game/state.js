@@ -24,5 +24,4 @@ export const GameState = {
   highScore: 0,
   animationId: null,
   gameFrame: 0,
-  pixelBlastApp: null,
 };

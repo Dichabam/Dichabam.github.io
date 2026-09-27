@@ -1,0 +1,83 @@
+{
+  "name": "Dichaba Mofokeng",
+  "role": "Student",
+  "contact": ["Johannesburg, South Africa", "contact@dichabamofokeng.me"],
+  "sections": [
+    {
+      "type": "text",
+      "title": "Professional Summary",
+      "text": "Enthusiastic and versatile Computer Science student at the University of Cape Town with strong foundations in programming, app development, and graphic design."
+    },
+    {
+      "type": "timeline",
+      "title": "Education",
+      "items": [
+        {
+          "date": "Present",
+          "heading": "University of Cape Town",
+          "subheading": "Bachelor of Science(BSc)",
+          "bullets": [
+            "Major(s): Computer Science, Statistics and Data Sciences",
+            "Societies: UCT Mathematics, Investment, Developers Society, Golf Club"
+          ]
+        },
+        {
+          "date": "2019 – 2023",
+          "heading": "St. Matthews Private Secondary School",
+          "subheading": "Matriculated with Bachelor Pass & Distinctions",
+          "bullets": ["Part of the school top 10", "Served as a tutor"]
+        }
+      ]
+    },
+    {
+      "type": "skills",
+      "title": "Technical Skills",
+      "groups": [
+        { "category": "Languages", "text": "Python, Java, JavaScript, C#, Scala, SQL, R" },
+        { "category": "Frameworks/Libs", "text": "PyTorch, Pandas, Matplotlib, React, .NET Framework" },
+        { "category": "Tools", "text": "Git, VS Code & Visual Studio, Android Studio & Intellij ,Blender (3D)" },
+        { "category": "Other", "text": "Mathematics, Statistics, Percussion" }
+      ]
+    },
+    {
+      "type": "timeline",
+      "title": "Experience & Projects",
+      "items": [
+        {
+          "date": "2024 - 2025",
+          "heading": "Avenue Road Residence",
+          "subheading": "ICT & Maintenance Sub-Committee",
+          "bullets": [
+            "Managed residence technical support and facilities improvements.",
+            "Enhanced user satisfaction through efficient troubleshooting."
+          ]
+        },
+        {
+          "date": "2025",
+          "heading": "Hackathons (Resembler.Ai & Entelect)",
+          "subheading": "UCT Developers Society",
+          "bullets": [
+            "Developed a scalable prototype for motor accident footage upload.",
+            "Created an algorithm for optimal drone paths for animal feeding (Entelect Cup)."
+          ]
+        }
+      ]
+    },
+    {
+      "type": "timeline",
+      "title": "Leadership",
+      "items": [
+        {
+          "date": "2023",
+          "heading": "Matric Leadership",
+          "subheading": "Outreach Committee",
+          "bullets": [
+            "Coordinated events and facilitated student engagement.",
+            "Mentored students in academic endeavours."
+          ]
+        }
+      ]
+    }
+  ],
+  "note": "Note: this is not the full CV. Full CV available on Request"
+}

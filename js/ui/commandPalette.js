@@ -313,7 +313,12 @@ export class CommandPalette {
     this.list.innerHTML = "";
 
     if (this.filtered.length === 0) {
-      this.list.innerHTML = `<div id="cmd-empty">No commands found for "<strong>${this.query}</strong>"</div>`;
+      const empty = document.createElement("div");
+      empty.id = "cmd-empty";
+      const strong = document.createElement("strong");
+      strong.textContent = this.query; // user input: never parse as HTML
+      empty.append('No commands found for "', strong, '"');
+      this.list.appendChild(empty);
       return;
     }
 

@@ -311,6 +311,9 @@ function injectFormIntoContactSection() {
         ></textarea>
         <span class="cf-error-msg" id="cf-message-err">Please write a message</span>
       </div>
+      <!-- Honeypot: hidden from people, bots fill it, Formspree drops those submissions -->
+      <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true"
+        style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0" />
       <div id="cf-status" class="cf-status" role="alert" aria-live="polite"></div>
       <div class="cf-submit-row">
         <button

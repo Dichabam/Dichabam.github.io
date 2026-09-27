@@ -2,7 +2,6 @@ import { GameState } from "./state.js";
 import { drawGrid, drawPlayer, Obstacle } from "./renderer.js";
 import { updateUI, showGameOver, finishInstructions } from "./ui.js";
 import { handleInput } from "./input.js";
-//import { PixelBlastEffect } from "./pixelBlastEffect.js";
 
 export function resizeGame() {
   const canvas = GameState.canvas;
@@ -95,9 +94,6 @@ export function startGame() {
 
   if (GameState.isGameRunning) return;
 
-  // if (GameState.pixelBlastApp)
-  //   document.getElementById("pixel-blast-container").style.display = "none";
-
   resizeGame();
   GameState.isGameRunning = true;
   GameState.score = 0;
@@ -135,11 +131,6 @@ export function openGame() {
 
   const win = overlay.querySelector(".game-window");
   if (win) win.focus();
-
-  //if (!GameState.pixelBlastApp) {
-   // GameState.pixelBlastApp = new PixelBlastEffect("pixel-blast-container");
- // }
-  //document.getElementById("pixel-blast-container").style.display = "block";
 
   setTimeout(() => {
     resizeGame();
